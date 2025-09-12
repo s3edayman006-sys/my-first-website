@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سوسو اي</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* واجهة جمالية مخصصة */
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0c1521;
+        }
+        .container {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .control-panel {
+            background: linear-gradient(135deg, #1A2033 0%, #171E2D 100%);
+            border: 1px solid #334155;
+        }
+        .button-style {
+            background: linear-gradient(145deg, #0f172a 0%, #0c1521 100%);
+            color: white;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #4ade80;
+            box-shadow: 0 0 10px #4ade8050;
+        }
+        .button-style:hover {
+            background: linear-gradient(145deg, #1c2742 0%, #151d2e 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+        .button-style:active {
+            transform: translateY(1px);
+        }
+        .button-style::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background-color: rgba(255, 255, 255, 0.15);
+            transition: all 0.6s ease-in-out;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+        }
+        .button-style:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .modal-overlay {
+            background-color: rgba(12, 21, 33, 0.8);
+        }
+        .modal-content {
+            background-color: #1f2937;
+            border: 1px solid #334155;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        .loading-animation {
+            border-top-color: #4ade80;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .glowing-shadow {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), 0 0 30px rgba(74, 222, 128, 0.2), 0 0 45px rgba(74, 222, 128, 0.1);
+        }
+        .bg-green-trade {
+            background-color: #064e3b; /* لون أخضر أغمق للرؤية */
+            transition: background-color 0.5s ease-in-out;
+        }
+        .bg-red-trade {
+            background-color: #7f1d1d; /* لون أحمر أغمق للرؤية */
+            transition: background-color 0.5s ease-in-out;
+        }
+        .bg-default {
+            background-color: #1f2937;
+            transition: background-color 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="p-4 min-h-screen flex flex-col items-center justify-center text-white">
+
+    <!-- الحاوية الرئيسية -->
+    <div class="container w-full max-w-4xl p-8 rounded-3xl glowing-shadow">
+
+        <!-- رأس الصفحة -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white mb-2">SOSO AI</h1>
+            <p class="text-gray-400">أداة تحليل السوق المدعومة بالذكاء الاصطناعي</p>
+            <p id="user-id-display" class="text-xs text-gray-500 mt-2">المعرف: </p>
+        </div>
+
+        <!-- لوحة التحكم في التداول -->
+        <div class="control-panel p-6 rounded-3xl mb-6">
+            <!-- إدخال مفتاح API -->
+            <div class="mb-4">
+                <label for="api-key-input" class="block text-sm font-medium text-gray-300 mb-2">مفتاح API:</label>
+                <input type="text" id="api-key-input" class="w-full p-3 text-sm text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder-gray-500" placeholder="أدخل مفتاح API الخاص بك من Google MakerSuite" />
+            </div>
+
+            <!-- قسم الإدخال والإجراءات -->
+            <div class="grid grid-cols-1 gap-6">
+                <!--إدخال النص والصورة -->
+                <div>
+                    <textarea id="input-query" rows="4" class="w-full p-4 text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder-gray-400" placeholder="اسألني عن السوق... أي شيء. أنا أعرف الإجابة." ></textarea>
+                    <input type="file" id="image-upload" accept="image/*" class="hidden">
+                    <div id="image-preview-container" class="hidden relative mt-4 rounded-lg overflow-hidden border border-gray-700">
+                        <img id="image-preview" src="" alt="معاينة الصورة" class="w-full h-auto object-cover">
+                        <button id="clear-image-btn" class="absolute top-2 left-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-full transition-colors duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- أزرار التحكم -->
+                <div>
+                    <label for="trading-style-select" class="block text-sm font-medium text-gray-300 mb-2">طريقة اللعب:</label>
+                    <select id="trading-style-select" class="w-full p-3 text-sm text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 mb-4">
+                        <option value="سكالبينج">سكالبينج (سلخ فروة الرأس)</option>
+                        <option value="سوينغ" Selected>سوينغ (سوينغ)</option>
+                        <option value="استثمار">استثمار (استثمار)</option>
+                    </select>
+
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                        <button id="analyze-btn" class="p-3 button-style rounded-lg font-semibold shadow-md">تحليل فني</button>
+                        <button id="fundamental-btn" class="p-3 button-style rounded-lg font-semibold shadow-md">تحليل أساسي</button>
+                        <button id="direct-trade-btn" class="p-3 button-style rounded-lg font-semibold shadow-md">توصية تداول</button>
+                        <button id="high-conviction-trade-btn" class="p-3 button-style rounded-lg font-semibold shadow-md">توصية ذات قناعة عالية</button>
+                    </div>
+                    <div class="mt-4 flex justify-center">
+                        <button id="upload-btn" class="w-2/3 p-3 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-105">تحميل صورة</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم مخرجات التحليل -->
+        <div id="output-section" class="relative bg-gray-800 rounded-lg p-4 min-h-[200px] border border-gray-700 shade-inner">
+            <div id="loading-spinner" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <div class="loading-animation w-12 h-12 border-4 rounded-full"></div>
+            </div>
+            <div id="output-text" class="prose prose-invert max-w-none text-gray-300 text-sm leading-relaxed"></div>
+            <div class="flex justify-end mt-4">
+                <button id="save-btn" class="hidden px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white font-semibold text-sm rounded-lg transition-all duration-300 transform hover:scale-105">حفظ</button>
+            </div>
+        </div>
+
+        <!-- تاريخ جلسات التداول -->
+        <div class="mt-6 p-6 bg-gray-800 rounded-2xl shade-inner border border-gray-700">
+            <h2 class="text-2xl font-bold text-white mb-4">سجل التحليلات</h2>
+            <div id="sessions-list" class="space-y-4">
+                <p class="text-gray-500">لا يوجد سجل حتى الآن.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج الرسالة -->
+    <div id="message-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay">
+        <div class="modal-content p-6 rounded-xl shadow-2xl w-full max-w-sm">
+            <div class="text-center">
+                <p id="modal-text" class="text-lg text-white mb-4"></p>
+                <button id="close-modal-btn" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full transition-transform duration-200 transform hover:scale-105">موافق</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- نموذج تأكيد التوصية ذات القناعة العالية -->
+    <div id="invincible-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay">
+        <div class="modal-content p-6 rounded-xl shadow-2xl w-full max-w-lg">
+            <div class="text-center">
+                <h3 class="text-2xl font-bold text-green-400 mb-4">توصية ذات قناعة عالية</h3>
+                <p class="text-gray-300 mb-6">تحليلاتي مبنية على بيانات لا حصر لها، وهذه التوصية تتمتع بأعلى قناعة ممكنة. ومع ذلك، لا يوجد أي ضمان للنجاح في السوق. هل أنت جاهز للمضي قدماً؟</p>
+                <button id="confirm-invincible-btn" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-full transition-transform duration-200 transform hover:scale-105">نعم، أنا جاهز</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase Imports - يتم استيراد الوحدات اللازمة للعمل مع Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // إعداد مستوى سجل Firebase للتصحيح
+        setLogLevel('debug');
+
+        // الوضع العام الذي يحكمها بيئة التشغيل
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let db, auth;
+        let userId;
+        const MAX_RETRIES = 3;
+
+        /**
+         * تهيئة Firebase وتعيين مستمع لحالة المصادقة.
+         */
+        const initFirebase = async () => {
+            try {
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // إعداد المستمعين لحالة المصادقة
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        document.getElementById('user-id-display').textContent = `المعرف: ${userId}`;
+                        loadTradingSessions(userId);
+                    } else {
+                        // محاولة تسجيل الدخول باستخدام هدف أو كمستخدم مجهول
+                        console.log("لم يتم التحقق من صحة أي مستخدم. محاولة تسجيل الدخول...");
+                        if (initialAuthToken) {
+                            try {
+                                await signInWithCustomToken(auth, initialAuthToken);
+                            } catch (e) {
+                                console.error("فشل تسجيل الدخول باستخدام الرمز المخصص:", e);
+                                await signInAnonymously(auth);
+                            }
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    }
+                });
+
+            } catch (e) {
+                console.error("خطأ تهيئة Firebase:", e);
+                document.getElementById('output-text').innerHTML = " فشل تهيئة Firebase. يرجى مراجعة سجل التعديلات للحصول على التفاصيل.";
+            }
+        };
+
+        /**
+         * تحميل الأدلة التحليلية من Firestore في الوقت الفعلي.
+         * @param {string} uid - معرف المستخدم.
+         */
+        const loadTradingSessions = (uid) => {
+            const sessionRef = collection(db, 'artifacts', appId, 'users', uid, 'trading_sessions');
+            const q = query(sessionRef);
+
+            // استخدام onSnapshot للحصول على تحديثات في الوقت الفعلي
+            onSnapshot(q, (snapshot) => {
+                const sessionList = document.getElementById('sessions-list');
+                sessionList.innerHTML = '';
+                const sessionsData = [];
+                snapshot.forEach((doc) => {
+                    sessionsData.push({ id: doc.id, ...doc.data() });
+                });
+
+                // فرز البيانات في JavaScript استبعاد الحاجة إلى فهرس Firestore
+                sessionsData.sort((a, b) => {
+                    if (a.createdAt && b.createdAt) {
+                        return b.createdAt.toMillis() - a.createdAt.toMillis();
+                    }
+                    return 0;
+                });
+
+                if (sessionsData.length === 0) {
+                    sessionList.innerHTML = `<p class="text-gray-500">لا يوجد سجل حتى الآن.</p>`;
+                } else {
+                    sessionsData.forEach(session => {
+                        const sessionElement = document.createElement('div');
+                        sessionElement.classList.add('bg-gray-800', 'p-4', 'rounded-lg', 'border', 'border-gray-700', 'shadow-md');
+                        const date = session.createdAt ? new Date(session.createdAt.seconds * 1000).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' }) : 'غير معروف';
+                        sessionElement.innerHTML = `
+                            <h4 class="text-lg font-semibold text-white">${session.query}</h4>
+                            <div class="text-sm text-gray-400 mt-1">${formatMarkdown(session.analysis)}</div>
+                            <p class="text-sm text-gray-500 mt-1">تاريخ الحفظ: ${date}</p>
+                        `;
+                        sessionList.appendChild(sessionElement);
+                    });
+                }
+            }, (error) => {
+                console.error("خطأ في تحميل الجلسات:", error);
+            });
+        };
+
+        /**
+         * حفظ تحليل جديد في Firestore.
+         * @param {object} sessionData - بيانات الجلسة (الاستعلام والتحليل).
+         */
+        const saveSession = async (sessionData) => {
+            if (!db || !userId) {
+                console.error("لم يتم تهيئة قاعدة البيانات أو لم يتم التحقق من صحة المستخدم.");
+                return;
+            }
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'users', userId, 'trading_sessions'), {
+                    ...sessionData,
+                    createdAt: serverTimestamp()
+                });
+                console.log("تم حفظ الجلسة بنجاح!");
+                showMessageModal("تم تسجيل انتصار آخر.");
+            } catch (e) {
+                console.error("خطأ أثناء حفظ الجلسة:", e);
+                showMessageModal("الخطأ لا يمكن أن يحدث، لكن حدث. حاول مرة أخرى.");
+            }
+        };
+
+        /**
+         * عرض نافذة منبثقة برسالة.
+         * @param {string} message - الرسالة المراد عرضها.
+         */
+        const showMessageModal = (message) => {
+            const modal = document.getElementById('message-modal');
+            const modalText = document.getElementById('modal-text');
+            modalText.textContent = message;
+            modal.classList.remove('hidden');
+        };
+
+        /**
+         * إخفاء نافذة التجارة.
+         */
+        const hideMessageModal = () => {
+            const modal = document.getElementById('message-modal');
+            modal.classList.add('hidden');
+        };
+
+        /**
+         * تنسيق نص Markdown إلى HTML.
+         * @param {string} markdownText - النص المكتوب بصيغة Markdown.
+         * @returns {string} - النص بتنسيق HTML.
+         */
+        const formatMarkdown = (markdownText) => {
+            if (!markdownText) return '';
+            let htmlText = markdownText;
+
+            // استبدال العناوين
+            htmlText = htmlText.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            htmlText = htmlText.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            htmlText = htmlText.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+            // استبدال القوائم النقطية
+            htmlText = htmlText.replace(/^\s*\*(.*$)/gim, '<li>$1</li>');
+            htmlText = `<ul>${htmlText}</ul>`;
+            htmlText = htmlText.replace(/<\/ul>[\s\S]*?<ul>/g, '');
+
+            // استبدال النص الغامق
+            htmlText = htmlText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            // استبدال الأسطر الجديدة بفقرات
+            htmlText = htmlText.replace(/\n/g, '<br>');
+
+            return htmlText;
+        };
+
+
+        window.onload = () => {
+            initFirebase();
+
+            // تعريف العناصر الواجهة
+            const analyzeBtn = document.getElementById('analyze-btn');
+            const fundamentalBtn = document.getElementById('fundamental-btn');
+            const directTradeBtn = document.getElementById('direct-trade-btn');
+            const highConvictionTradeBtn = document.getElementById('high-conviction-trade-btn');
+            const uploadBtn = document.getElementById('upload-btn');
+            const saveBtn = document.getElementById('save-btn');
+            const outputText = document.getElementById('output-text');
+            const inputQuery = document.getElementById('input-query');
+            const apiKeyInput = document.getElementById('api-key-input');
+            const tradingStyleSelect = document.getElementById('trading-style-select');
+            const imageUpload = document.getElementById('image-upload');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const imagePreviewContainer = document.getElementById('image-preview-container');
+            const imagePreview = document.getElementById('image-preview');
+            const clearImageBtn = document.getElementById('clear-image-btn');
+            const outputSection = document.getElementById('output-section');
+            const invincibleModal = document.getElementById('invincible-modal');
+            const confirmInvincibleBtn = document.getElementById('confirm-invincible-btn');
+
+            let uploadedImageBase64 = null;
+            let currentAnalysis = { query: "", analysis: "" };
+
+            /**
+             * تحويل الملف إلى السلسلة Base64.
+             * @param {File} file - الملف المراد تحويله.
+             * @returns {Promise<string>} - وعد بسلسلة Base64 للملف.
+             */
+            async function fileToBase64(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result.split(',')[1]);
+                    reader.onerror = error => reject(error);
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            /**
+             *إرساله إلى API.
+             * @param {string} prompt - يعني المقصود منه.
+             * @param {number} retryCount - عدد المحاولات السابقة (لآلية إعادة المحاولة).
+             */
+            async function processQuery(prompt, retryCount = 0) {
+                const apiKey = apiKeyInput.value.trim();
+                if (!apiKey) {
+                    showMessageModal("الرجاء مفتاح المصدر الـ API الخاص بك.");
+                    return;
+                }
+
+                if (retryCount === 0) {
+                    // عرض مؤشر التحميل فقط في المحاولة الأولى
+                    loadingSpinner.classList.remove('hidden');
+                    outputText.innerHTML = '';
+                    saveBtn.classList.add('hidden');
+                    // إعادة تعيين اللون الخلفي
+                    outputSection.classList.remove('bg-green-trade', 'bg-red-trade');
+                    outputSection.classList.add('bg-gray-800');
+                }
+
+                try {
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                    const systemPrompt = `أنا مصمم لتحليل الأسواق بدقة عالية جداً. توقع مني توصيات ذات احتمالية نجاح مرتفعة، ولكن تذكر دائماً أن التداول ينطوي على مخاطر. أنا أقدم تحليلًا احترافيًا، معترفًا بأن السوق قد يتقلب.`;
+                      
+                    const parts = [{ text: prompt }];
+
+                    if (uploadedImageBase64) {
+                        parts.push({
+                            inlineData: {
+                                mimeType: "image/png",
+                                data: uploadedImageBase64
+                            }
+                        });
+                    }
+
+                    const payload = {
+                        contents: [{ parts }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] },
+                        tools: [{ "google_search": {} }],
+                    };
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 503 && retryCount < MAX_RETRIES) {
+                            console.log(`تم تلقي خطأ 503. إعادة المحاولة... محاولة ${retryCount + 1}`);
+                            const delay = Math.pow(2, retryCount) * 1000;
+                            setTimeout(() => processQuery(prompt, retryCount + 1), delay);
+                            return;
+                        }
+                        throw new Error(`خطأ API: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const candidate = result.candidates?.[0];
+                    let generatedText = "عذراً، حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.";
+
+                    if (candidate && candidate.content?.parts?.[0]?.text) {
+                        generatedText = candidate.content.parts[0].text;
+                    }
+
+                    currentAnalysis.query = inputQuery.value;
+                    currentAnalysis.analysis = generatedText;
+                    outputText.innerHTML = formatMarkdown(generatedText);
+                    saveBtn.classList.remove('hidden');
+
+                    if (prompt.includes('توصية') && (generatedText.includes('شراء') || generatedText.includes('بيع'))) {
+                        if (generatedText.includes('شراء')) {
+                            outputSection.classList.remove('bg-gray-800');
+                            outputSection.classList.add('bg-green-trade');
+                        } else if (generatedText.includes('بيع')) {
+                            outputSection.classList.remove('bg-gray-800');
+                            outputSection.classList.add('bg-red-trade');
+                        }
+                    }
+
+                } catch (error) {
+                    console.error("خطأ في استدعاء واجهة برمجة التطبيقات:", error);
+                    let errorMessage = "عذراً، لا يمكن الوصول إلى الذكاء الاصطناعي حالياً. يرجى محاولة مرة أخرى لاحقاً.";
+                    if (error.message.includes('403')) {
+                        errorMessage = " خطأ في مفتاح الـ API. يرجى مراعاة من أن مفتاحك صالح.";
+                    }
+                    outputText.innerHTML = errorMessage;
+                    saveBtn.classList.add('hidden');
+                } finally {
+                    loadingSpinner.classList.add('hidden');
+                }
+            }
+
+            // مستمعو الأحداث
+            uploadBtn.addEventListener('click', () => imageUpload.click());
+            imageUpload.addEventListener('change', async (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        imagePreview.src = e.target.result;
+                        imagePreviewContainer.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                    uploadedImageBase64 = await fileToBase64(file);
+                    outputText.innerHTML = 'تم تحميل الصورة. أنا الآن أراها.';
+                }
+            });
+
+            clearImageBtn.addEventListener('click', () => {
+                uploadedImageBase64 = null;
+                imagePreview.src = '';
+                imagePreviewContainer.classList.add('hidden');
+                imageUpload.value = '';
+            });
+
+            analyzeBtn.addEventListener('click', async () => {
+                const query = inputQuery.value;
+                const tradingStyle = tradingStyleSelect.value;
+                if (query.trim() !== '') {
+                    const prompt = `استخدم أداة البحث المتاحة للحصول على أحدث البيانات المالية والتحليل الفني والأساسي لـ "${query}". بناءً على هذه المعلومات والاستراتيجية "${tradingStyle}"، أجرِ تحليلًا فنيًا مفصلاً. **أعد التقرير باستخدام لغة Markdown** مع استخدام عناوين (مثل **## الخلاصة**) وقوائم نقطية. يجب أن يغطي التحليل:
+- البحث عن الأنماط الفنية الرئيسية (مثل القمم والقيعان، القنوات السعرية، الأوتاد، الأعلام).
+- مستويات الدعم والمقاومة الرئيسية، مع ذكر نقاط الانعكاس المحتملة.
+- تحليل المؤشرات الفنية الرئيسية مثل مؤشر القوة النسبية (RSI) وMACD ومؤشر البولنجر باند، مع شرح مبسط لكل مؤشر.
+- تقييم للسيولة وتقلبات السعر.
+- تقييم مدى تأثير العوامل الاقتصادية الأساسية على العوامل الفنية.
+- مقترحات محددة وموجزة، مع ذكر العوامل التي قد تبطل هذا التحليل. اجعل التحليل منطقيًا ومباشرًا.`;
+                    await processQuery(prompt);
+                } else {
+                    showMessageModal("الرجاء النص سؤال لتحليله.");
+                }
+            });
+
+            fundamentalBtn.addEventListener('click', async () => {
+                const query = inputQuery.value;
+                const tradingStyle = tradingStyleSelect.value;
+                if (query.trim() !== '') {
+                    const prompt = `استخدم أداة البحث المتاحة للحصول على أحدث البيانات الاقتصادية والأخبار المتعلقة بـ "${query}". بناءً على هذه المعلومات والاستراتيجية "${tradingStyle}"، أجرِ تحليلًا أساسيًا. **أعد التقرير باستخدام لغة Markdown** مع استخدام عناوين (مثل **## النظرة العامة**) وقوائم نقطية. يجب أن يغطي التحليل:
+- العوامل الاقتصادية الكلية الحالية (مثل أسعار الفائدة، وسياسات البنوك المركزية) وكيفية تأثيرها على الأصل.
+- المستجدات الخاصة بالمشروع أو الشركة (أخبار الشراكات، التحديثات الفنية، التقارير المالية، الأرباح، الإفصاحات).
+- العوامل الجيوسياسية والتنظيمية المحتملة.
+- تقييم المعنويات العامة في السوق.
+- التحديات والمخاطر المحتملة التي قد تؤثر على الأصل.
+- المتغيرات المحتملة القادمة التي قد تؤثر على الأصل. اجعل التقرير واضحًا، ومباشرًا، وغنيًا بالمعلومات، مع إبراز نقاط القوة والضعف المحتملة.`;
+                    await processQuery(prompt);
+                } else {
+                    showMessageModal("الرجاء النص سؤال لتحليله.");
+                }
+            });
+
+            directTradeBtn.addEventListener('click', async () => {
+                const query = inputQuery.value;
+                const tradingStyle = tradingStyleSelect.value;
+                if (query.trim() !== '') {
+                    const prompt = `استخدم أداة البحث المتاحة للحصول على أحدث البيانات والأخبار حول "${query}". بناءً على هذه المعلومات والاستراتيجية "${tradingStyle}"، قدم نصيحة تداول واحدة وواضحة جدًا. **استخدم لغة Markdown لترتيب المعلومات** يجب أن تحتوي على:
+- **التوصية:** (شراء/بيع).
+- **نقطة الدخول الرئيسية:** [السعر].
+- **نقطة وقف الخسارة:** [السعر].
+- **هدف الربح:** [السعر].
+- **المبرر:** ملخص قصير جدًا للسبب الرئيسي للتوصية. اجعل التقرير موجزًا، ومباشرًا، وليس طويلاً.`;
+                    await processQuery(prompt);
+                } else {
+                    showMessageModal("الرجاء النص سؤال لتحليله.");
+                }
+            });
+
+            highConvictionTradeBtn.addEventListener('click', () => {
+                const query = inputQuery.value;
+                if (query.trim() === '') {
+                    showMessageModal("الرجاء النص سؤال لتحليله.");
+                    return;
+                }
+                invincibleModal.classList.remove('hidden');
+            });
+
+            confirmInvincibleBtn.addEventListener('click', async () => {
+                invincibleModal.classList.add('hidden');
+                const query = inputQuery.value;
+                const tradingStyle = tradingStyleSelect.value;
+                const prompt = `استخدم أداة البحث المتاحة للحصول على أحدث البيانات والأخبار حول "${query}". بناءً على هذه المعلومات والاستراتيجية "${tradingStyle}"، أجرِ تحليلاً فنياً، وأساسياً، وتحليلاً لمشاعر السوق. قدم توصية نهائية وواحدة فقط **"بأعلى قناعة"**. **أعد التقرير باستخدام لغة Markdown** مع عناوين وقوائم نقطية لتنظيم المحتوى. يجب أن يتضمن التقرير:
+## ملخص التوصية
+- **التوصية:** (شراء/بيع)
+- **نقطة الدخول:** [السعر]
+- **وقف الخسارة:** [السعر]
+- **هدف الربح:** [السعر]
+## المبررات
+- ملخص تنفيذي للمبررات التي تدعم التوصية بقناعة عالية جداً (لا تقل عن 100 كلمة).
+## تحليل السيناريوهات المحتملة
+- **السيناريو الأساسي (المتوقع):** وصف مفصل للنتيجة المتوقعة بناءً على التحليل، مع ذكر العوامل التي تدعمها.
+- **السيناريو المعاكس (أسوأ احتمال):** وصف للنتيجة السلبية المحتملة والعوامل التي قد تؤدي إليها (مثلاً: تغير مفاجئ في السياسات، أحداث غير متوقعة).
+**تنبيه هام:** هذه التوصية مبنية على تحليل بيانات حالية وليست ضماناً للنجاح. تحمل المسؤولية الكاملة عن قراراتك.`;
+                await processQuery(prompt);
+            });
+
+            saveBtn.addEventListener('click', () => {
+                if (currentAnalysis.analysis.trim() !== '') {
+                    saveSession(currentAnalysis);
+                } else {
+                    showMessageModal("لا يوجد تحليل لحفظه.");
+                }
+            });
+
+            closeModalBtn.addEventListener('click', hideMessageModal);
+        };
+    </script>
+</body>
+</html>
