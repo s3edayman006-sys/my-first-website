@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>سوسو اي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -57,6 +57,7 @@
         }
         .modal-overlay {
             background-color: rgba(12, 21, 33, 0.8);
+            backdrop-filter: blur(4px);
         }
         .modal-content {
             background-color: #1f2937;
@@ -79,11 +80,11 @@
         }
         .bg-red-trade {
             background-color: #7f1d1d; /* لون أحمر أغمق للرؤية */
-            transition: background-color: 0.5s ease-in-out;
+            transition: background-color 0.5s ease-in-out;
         }
         .bg-default {
             background-color: #1f2937;
-            transition: background-color: 0.5s ease-in-out;
+            transition: background-color 0.5s ease-in-out;
         }
     </style>
 </head>
@@ -120,7 +121,6 @@
         </div>
     </div>
 
-
     <!-- الحاوية الرئيسية (مخفية بشكل افتراضي) -->
     <div id="main-app-container" class="container w-full max-w-4xl p-8 rounded-3xl glowing-shadow hidden">
 
@@ -136,7 +136,7 @@
             <!-- إدخال مفتاح API -->
             <div class="mb-4">
                 <label for="api-key-input" class="block text-sm font-medium text-gray-300 mb-2">مفتاح API:</label>
-                <input type="text" id="api-key-input" class="w-full p-3 text-sm text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder-gray-500" placeholder="أدخل مفتاح API الخاص بك من Google MakerSuite" />
+                <input type="text" id="api-key-input" class="w-full p-3 text-sm text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder-gray-500" placeholder="أدخل مفتاح API الخاص بك من Google AI Studio" />
             </div>
             <!-- قسم الإدخال والإجراءات -->
             <div class="grid grid-cols-1 gap-6">
@@ -158,9 +158,9 @@
                 <div>
                     <label for="trading-style-select" class="block text-sm font-medium text-gray-300 mb-2">طريقة اللعب:</label>
                     <select id="trading-style-select" class="w-full p-3 text-sm text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 mb-4">
-                        <option value="سكالبينج">سكالبينج (سلخ فروة الرأس)</option>
-                        <option value="سوينغ" Selected>سوينغ (سوينغ)</option>
-                        <option value="استثمار">استثمار (استثمار)</option>
+                        <option value="سكالبينج">سكالبينج (Scalping)</option>
+                        <option value="سوينغ" selected>سوينغ (Swing)</option>
+                        <option value="استثمار">استثمار (Investment)</option>
                     </select>
 
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
@@ -177,7 +177,7 @@
         </div>
 
         <!-- قسم مخرجات التحليل -->
-        <div id="output-section" class="relative bg-gray-800 rounded-lg p-4 min-h-[200px] border border-gray-700 shade-inner">
+        <div id="output-section" class="relative bg-gray-800 rounded-lg p-4 min-h-[200px] border border-gray-700 shadow-inner">
             <div id="loading-spinner" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                 <div class="loading-animation w-12 h-12 border-4 rounded-full"></div>
             </div>
@@ -188,15 +188,20 @@
         </div>
         
         <!-- لوحة تحكم المسؤول (مخفية بشكل افتراضي) -->
-        <div id="admin-panel" class="hidden mt-6 p-6 bg-gray-900 rounded-2xl shade-inner border border-gray-700">
+        <div id="admin-panel" class="hidden mt-6 p-6 bg-gray-900 rounded-2xl shadow-inner border border-gray-700">
             <h2 class="text-2xl font-bold text-white mb-4">طلبات الدخول المعلقة</h2>
             <div id="requests-list" class="space-y-4">
                 <p class="text-gray-500">لا توجد طلبات معلقة حاليًا.</p>
             </div>
+            
+            <h2 class="text-2xl font-bold text-white mb-4 mt-8">إدارة المستخدمين</h2>
+            <div id="users-list" class="space-y-4">
+                 <p class="text-gray-500">جاري تحميل المستخدمين...</p>
+            </div>
         </div>
 
         <!-- تاريخ جلسات التداول -->
-        <div class="mt-6 p-6 bg-gray-800 rounded-2xl shade-inner border border-gray-700">
+        <div class="mt-6 p-6 bg-gray-800 rounded-2xl shadow-inner border border-gray-700">
             <h2 class="text-2xl font-bold text-white mb-4">سجل التحليلات</h2>
             <div id="sessions-list" class="space-y-4">
                 <p class="text-gray-500">لا يوجد سجل حتى الآن.</p>
@@ -220,116 +225,145 @@
             <div class="text-center">
                 <h3 class="text-2xl font-bold text-green-400 mb-4">توصية ذات قناعة عالية</h3>
                 <p class="text-gray-300 mb-6">تحليلاتي مبنية على بيانات لا حصر لها، وهذه التوصية تتمتع بأعلى قناعة ممكنة. ومع ذلك، لا يوجد أي ضمان للنجاح في السوق. هل أنت جاهز للمضي قدماً؟</p>
-                <button id="confirm-invincible-btn" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-full transition-transform duration-200 transform hover:scale-105">نعم، أنا جاهز</button>
+                <div class="flex justify-center gap-4">
+                     <button id="confirm-invincible-btn" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-full transition-transform duration-200 transform hover:scale-105">نعم، أنا جاهز</button>
+                     <button id="cancel-invincible-btn" class="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-full transition-transform duration-200 transform hover:scale-105">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج تأكيد الحذف -->
+    <div id="confirm-delete-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay">
+        <div class="modal-content p-6 rounded-xl shadow-2xl w-full max-w-sm">
+            <div class="text-center">
+                <h3 class="text-xl font-bold text-red-400 mb-4">تأكيد الحذف</h3>
+                <p id="confirm-delete-text" class="text-lg text-white mb-6">هل أنت متأكد أنك تريد حذف هذا المستخدم؟ لا يمكن التراجع عن هذا الإجراء.</p>
+                <div class="flex justify-center gap-4">
+                    <button id="confirm-delete-btn" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-full transition-transform duration-200 transform hover:scale-105">نعم, حذف</button>
+                    <button id="cancel-delete-btn" class="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-full transition-transform duration-200 transform hover:scale-105">إلغاء</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script type="module">
-        // Firebase Imports - يتم استيراد الوحدات اللازمة للعمل مع Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, serverTimestamp, doc, updateDoc, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        /* ===========================
+           Firebase & Google AI + App logic
+           =========================== */
 
-        // إعداد مستوى سجل Firebase للتصحيح
-        setLogLevel('debug');
+        // Firebase (CDN) - v12.2.1
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
 
-        // الوضع العام الذي يحكمها بيئة التشغيل
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
-        let db, auth;
-        let userId;
-        let userRole = 'user'; // 'user' or 'admin'
-        const MAX_RETRIES = 3;
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            onSnapshot,
+            query,
+            serverTimestamp,
+            doc,
+            updateDoc,
+            where,
+            getDocs,
+            deleteDoc
+        } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
-        /**
-         * تهيئة Firebase وتعيين مستمع لحالة المصادقة.
-         */
-        const initFirebase = async () => {
-            try {
-                const app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-storage.js";
 
-                // إعداد المستمعين لحالة المصادقة
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        userId = user.uid;
-                        document.getElementById('user-id-display').textContent = `المعرف: ${userId}`;
-                        // لا تقم بتحميل الجلسات هنا مباشرة، سيتم ذلك بعد تسجيل الدخول الناجح
-                    } else {
-                        // محاولة تسجيل الدخول باستخدام هدف أو كمستخدم مجهول
-                        console.log("لم يتم التحقق من صحة أي مستخدم. محاولة تسجيل الدخول...");
-                        if (initialAuthToken) {
-                            try {
-                                await signInWithCustomToken(auth, initialAuthToken);
-                            } catch (e) {
-                                console.error("فشل تسجيل الدخول باستخدام الرمز المخصص:", e);
-                                await signInAnonymously(auth);
-                            }
-                        } else {
-                            await signInAnonymously(auth);
-                        }
-                    }
-                });
-
-            } catch (e) {
-                console.error("خطأ تهيئة Firebase:", e);
-                document.getElementById('output-text').innerHTML = " فشل تهيئة Firebase. يرجى مراجعة سجل التعديلات للحصول على التفاصيل.";
-            }
+        // === إعدادات Firebase (أنت وفرتهم سابقًا) ===
+        const firebaseConfig = {
+            apiKey: "AIzaSyCD_WhxL_TzGl4iHfAMFpR7wlYb-3rjK-Y",
+            authDomain: "soso-ai-b2c99.firebaseapp.com",
+            projectId: "soso-ai-b2c99",
+            storageBucket: "soso-ai-b2c99.appspot.com",
+            messagingSenderId: "726550376016",
+            appId: "1:726550376016:web:42b9ed1bc576873754ab55",
+            measurementId: "G-ZVJBJ02Q71"
         };
-        
-        /**
-         * يقدم طلب تسجيل دخول للموافقة عليه من قبل المسؤول.
-         * @param {string} username - اسم المستخدم الذي يحاول تسجيل الدخول.
-         */
-        const submitLoginRequest = async (username) => {
-            if (!db) {
-                showMessageModal("خطأ في الاتصال بقاعدة البيانات. حاول مرة أخرى.");
-                return;
+
+        // تهيئة Firebase
+        let app, analytics, auth, db, storage;
+        try {
+            app = initializeApp(firebaseConfig);
+            // analytics قد لا يظهر على localhost ولكن لا يضر وجوده
+            try { analytics = getAnalytics(app); } catch(e){ console.debug("Analytics not initialized (likely localhost).", e); }
+            auth = getAuth(app);
+            db = getFirestore(app);
+            storage = getStorage(app);
+        } catch (e) {
+            console.error("Firebase init error:", e);
+            showMessageModal(`فشل تهيئة Firebase: ${e.message}. تأكد من إعدادات المشروع في الكود.`);
+        }
+
+        // --- متغيرات التطبيق ---
+        let userId = null;
+        let userRole = 'user';
+        let currentImageBase64 = null;
+        const MAX_RETRIES = 3;
+        let userToDeleteId = null;
+        const appId = 'default-app-id'; // استخدم هذا المسار داخل Firestore (يمكنك تغييره)
+
+        // اتبع حالة المصادقة
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                userId = user.uid;
+                document.getElementById('user-id-display').textContent = `المعرف: ${userId}`;
+                console.debug("Authenticated as:", userId);
+            } else {
+                // لا تشغل تسجيل تلقائي هنا — تطبيقك يتحكم في التسجيل داخل الواجهة
+                console.debug("No auth user present.");
             }
+        });
+
+        /* ====== Firestore login requests flow ====== */
+
+        const submitLoginRequest = async (username) => {
+            if (!db) { showMessageModal("Database connection error. الرجاء المحاولة لاحقًا."); return; }
             try {
                 const requestsRef = collection(db, 'artifacts', appId, 'public', 'data', 'login_requests');
+                const q = query(requestsRef, where("username", "==", username), where("status", "==", "pending"));
+                const existingRequests = await getDocs(q);
+                if (!existingRequests.empty) {
+                    showMessageModal("A login request for this username is already pending.");
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('waiting-screen').classList.remove('hidden');
+                    listenForApproval(existingRequests.docs[0].id);
+                    return;
+                }
+
                 const docRef = await addDoc(requestsRef, {
                     username: username,
                     status: 'pending',
                     createdAt: serverTimestamp()
                 });
-                console.log("Login request created with ID:", docRef.id);
-                // تخزين معرف الطلب في جلسة المتصفح لمتابعته
                 sessionStorage.setItem('loginRequestId', docRef.id);
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('waiting-screen').classList.remove('hidden');
                 listenForApproval(docRef.id);
             } catch (error) {
                 console.error("Error submitting login request:", error);
                 showMessageModal("حدث خطأ أثناء إرسال طلب الدخول.");
-                document.getElementById('login-screen').classList.remove('hidden');
-                document.getElementById('waiting-screen').classList.add('hidden');
             }
         };
 
-        /**
-         * يستمع إلى التغييرات في حالة طلب تسجيل الدخول.
-         * @param {string} requestId - معرف مستند طلب تسجيل الدخول في Firestore.
-         */
         const listenForApproval = (requestId) => {
             const requestDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'login_requests', requestId);
-            
             const unsubscribe = onSnapshot(requestDocRef, (docSnap) => {
                 if (docSnap.exists()) {
                     const requestData = docSnap.data();
-                    console.log("Request status update:", requestData.status);
                     if (requestData.status === 'approved') {
-                        unsubscribe(); // إيقاف الاستماع بعد الموافقة
+                        unsubscribe();
                         sessionStorage.removeItem('loginRequestId');
+                        showMessageModal("تمت الموافقة على طلبك! الرجاء تسجيل الدخول مرة أخرى.");
                         document.getElementById('waiting-screen').classList.add('hidden');
-                        document.getElementById('main-app-container').classList.remove('hidden');
-                        userRole = 'user';
-                        runMainApp();
+                        document.getElementById('login-screen').classList.remove('hidden');
+                        document.getElementById('login-form').reset();
                     } else if (requestData.status === 'denied') {
-                        unsubscribe(); // إيقاف الاستماع بعد الرفض
+                        unsubscribe();
                         sessionStorage.removeItem('loginRequestId');
                         showMessageModal("تم رفض طلب الدخول الخاص بك.");
                         document.getElementById('waiting-screen').classList.add('hidden');
@@ -346,18 +380,14 @@
                 }
             }, (error) => {
                 console.error("Error listening for approval:", error);
-                unsubscribe();
             });
         };
-        
-        /**
-         * تحميل وعرض طلبات تسجيل الدخول المعلقة للمسؤول.
-         */
-        const loadLoginRequests = () => {
-             const requestsRef = collection(db, 'artifacts', appId, 'public', 'data', 'login_requests');
-             const q = query(requestsRef, where("status", "==", "pending"));
 
-             onSnapshot(q, (snapshot) => {
+        const loadLoginRequests = () => {
+            const requestsRef = collection(db, 'artifacts', appId, 'public', 'data', 'login_requests');
+            const q = query(requestsRef, where("status", "==", "pending"));
+
+            onSnapshot(q, (snapshot) => {
                 const requestsList = document.getElementById('requests-list');
                 requestsList.innerHTML = '';
                 if (snapshot.empty) {
@@ -365,9 +395,9 @@
                     return;
                 }
                 
-                snapshot.forEach((doc) => {
-                    const request = doc.data();
-                    const requestId = doc.id;
+                snapshot.forEach((docItem) => {
+                    const request = docItem.data();
+                    const requestId = docItem.id;
                     const requestElement = document.createElement('div');
                     requestElement.className = 'bg-gray-800 p-4 rounded-lg flex justify-between items-center';
                     const requestDate = request.createdAt ? new Date(request.createdAt.seconds * 1000).toLocaleString('ar-EG') : 'غير معروف';
@@ -378,7 +408,7 @@
                             <p class="text-xs text-gray-400">${requestDate}</p>
                         </div>
                         <div class="flex gap-2">
-                            <button data-id="${requestId}" class="approve-btn px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-md">موافقة</button>
+                            <button data-id="${requestId}" data-username="${request.username}" class="approve-btn px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-md">موافقة</button>
                             <button data-id="${requestId}" class="deny-btn px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-md">رفض</button>
                         </div>
                     `;
@@ -386,462 +416,425 @@
                 });
 
                 document.querySelectorAll('.approve-btn').forEach(button => {
-                    button.addEventListener('click', (e) => approveRequest(e.target.dataset.id));
+                    button.addEventListener('click', (e) => approveRequest(e.target.dataset.id, e.target.dataset.username));
                 });
                 document.querySelectorAll('.deny-btn').forEach(button => {
                     button.addEventListener('click', (e) => denyRequest(e.target.dataset.id));
                 });
-             }, (error) => {
+            }, (error) => {
                  console.error("Error loading login requests:", error);
-                 requestsList.innerHTML = `<p class="text-red-500">حدث خطأ في تحميل الطلبات.</p>`;
-             });
+            });
         };
 
-        /**
-         * الموافقة على طلب تسجيل الدخول.
-         * @param {string} requestId - معرف مستند الطلب.
-         */
-        const approveRequest = async (requestId) => {
-            console.log(`Approving request ${requestId}`);
+        const approveRequest = async (requestId, username) => {
             const requestDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'login_requests', requestId);
+            const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'users');
             try {
+                await addDoc(usersRef, {
+                    username: username,
+                    status: 'active',
+                    createdAt: serverTimestamp()
+                });
                 await updateDoc(requestDocRef, { status: 'approved' });
             } catch (error) {
                 console.error("Error approving request:", error);
+                showMessageModal("فشل الموافقة على الطلب.");
             }
         };
 
-        /**
-         * رفض طلب تسجيل الدخول.
-         * @param {string} requestId - معرف مستند الطلب.
-         */
         const denyRequest = async (requestId) => {
-            console.log(`Denying request ${requestId}`);
             const requestDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'login_requests', requestId);
             try {
                 await updateDoc(requestDocRef, { status: 'denied' });
             } catch (error) {
                 console.error("Error denying request:", error);
+                showMessageModal("فشل رفض الطلب.");
             }
         };
 
+        const loadUsers = () => {
+            const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'users');
+            onSnapshot(usersRef, (snapshot) => {
+                const usersList = document.getElementById('users-list');
+                usersList.innerHTML = '';
+                if(snapshot.empty){
+                    usersList.innerHTML = `<p class="text-gray-500">لا يوجد مستخدمون مسجلون.</p>`;
+                    return;
+                }
+                snapshot.forEach(docItem => {
+                    const user = docItem.data();
+                    const userElement = document.createElement('div');
+                    userElement.className = 'bg-gray-800 p-4 rounded-lg flex justify-between items-center';
+                    
+                    const statusClass = user.status === 'active' ? 'text-green-400' : 'text-red-400';
+                    const buttonClass = user.status === 'active' ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-blue-600 hover:bg-blue-700';
+                    const buttonText = user.status === 'active' ? 'تعليق' : 'إعادة تفعيل';
 
-        /**
-         * تحميل الأدلة التحليلية من Firestore في الوقت الفعلي.
-         * @param {string} uid - معرف المستخدم.
-         */
+                    userElement.innerHTML = `
+                        <div>
+                           <p class="font-semibold text-white">${user.username}</p>
+                           <p class="text-sm ${statusClass}">${user.status}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button data-id="${docItem.id}" data-status="${user.status}" class="user-action-btn px-3 py-1 text-white text-sm font-semibold rounded-md ${buttonClass}">${buttonText}</button>
+                            <button data-id="${docItem.id}" class="delete-user-btn px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-md">حذف</button>
+                        </div>
+                    `;
+                    usersList.appendChild(userElement);
+                });
+
+                document.querySelectorAll('.user-action-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const id = e.target.dataset.id;
+                        const currentStatus = e.target.dataset.status;
+                        const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
+                        updateUserStatus(id, newStatus);
+                    });
+                });
+                document.querySelectorAll('.delete-user-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const id = e.target.dataset.id;
+                        showConfirmDeleteModal(id);
+                    });
+                });
+            }, (error) => {
+                console.error("Error loading users:", error);
+            });
+        };
+
+        const showConfirmDeleteModal = (userDocId) => {
+            userToDeleteId = userDocId;
+            document.getElementById('confirm-delete-modal').classList.remove('hidden');
+        };
+
+        const hideConfirmDeleteModal = () => {
+            userToDeleteId = null;
+            document.getElementById('confirm-delete-modal').classList.add('hidden');
+        };
+
+        const deleteUser = async (userDocId) => {
+            if (!userDocId) return;
+            const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', userDocId);
+            try {
+                await deleteDoc(userDocRef);
+                showMessageModal("تم حذف المستخدم بنجاح.");
+            } catch(error) {
+                console.error("Error deleting user:", error);
+                showMessageModal("فشل حذف المستخدم.");
+            }
+        };
+
+        const updateUserStatus = async (userDocId, newStatus) => {
+            const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', userDocId);
+            try {
+                await updateDoc(userDocRef, { status: newStatus });
+            } catch(error) {
+                console.error("Error updating user status:", error);
+                showMessageModal("Failed to update user status.");
+            }
+        };
+
         const loadTradingSessions = (uid) => {
             const sessionRef = collection(db, 'artifacts', appId, 'users', uid, 'trading_sessions');
-            const q = query(sessionRef);
-
-            // استخدام onSnapshot للحصول على تحديثات في الوقت الفعلي
-            onSnapshot(q, (snapshot) => {
+            onSnapshot(query(sessionRef), (snapshot) => {
                 const sessionList = document.getElementById('sessions-list');
                 sessionList.innerHTML = '';
-                const sessionsData = [];
-                snapshot.forEach((doc) => {
-                    sessionsData.push({ id: doc.id, ...doc.data() });
-                });
+                const sessionsData = snapshot.docs.map(docItem => ({ id: docItem.id, ...docItem.data() }));
 
-                // فرز البيانات في JavaScript استبعاد الحاجة إلى فهرس Firestore
-                sessionsData.sort((a, b) => {
-                    if (a.createdAt && b.createdAt) {
-                        return b.createdAt.toMillis() - a.createdAt.toMillis();
-                    }
-                    return 0;
-                });
+                sessionsData.sort((a, b) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
 
                 if (sessionsData.length === 0) {
                     sessionList.innerHTML = `<p class="text-gray-500">لا يوجد سجل حتى الآن.</p>`;
                 } else {
                     sessionsData.forEach(session => {
                         const sessionElement = document.createElement('div');
-                        sessionElement.classList.add('bg-gray-800', 'p-4', 'rounded-lg', 'border', 'border-gray-700', 'shadow-md');
+                        sessionElement.className = 'bg-gray-800 p-4 rounded-lg border border-gray-700 shadow-md';
                         const date = session.createdAt ? new Date(session.createdAt.seconds * 1000).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' }) : 'غير معروف';
                         sessionElement.innerHTML = `
                             <h4 class="text-lg font-semibold text-white">${session.query}</h4>
                             <div class="text-sm text-gray-400 mt-1">${formatMarkdown(session.analysis)}</div>
-                            <p class="text-sm text-gray-500 mt-1">تاريخ الحفظ: ${date}</p>
+                            <p class="text-xs text-gray-500 mt-2">تاريخ الحفظ: ${date}</p>
                         `;
                         sessionList.appendChild(sessionElement);
                     });
                 }
             }, (error) => {
-                console.error("خطأ في تحميل الجلسات:", error);
+                console.error("Error loading sessions:", error);
             });
         };
 
-        /**
-         * حفظ تحليل جديد في Firestore.
-         * @param {object} sessionData - بيانات الجلسة (الاستعلام والتحليل).
-         */
         const saveSession = async (sessionData) => {
             if (!db || !userId) {
-                console.error("لم يتم تهيئة قاعدة البيانات أو لم يتم التحقق من صحة المستخدم.");
+                showMessageModal("لا يمكن حفظ الجلسة. خطأ في الاتصال أو المستخدم غير مسجل.");
                 return;
             }
             try {
-                await addDoc(collection(db, 'artifacts', appId, 'users', userId, 'trading_sessions'), {
+                const sessionRef = collection(db, 'artifacts', appId, 'users', userId, 'trading_sessions');
+                await addDoc(sessionRef, {
                     ...sessionData,
                     createdAt: serverTimestamp()
                 });
-                console.log("تم حفظ الجلسة بنجاح!");
-                showMessageModal("تم تسجيل انتصار آخر.");
-            } catch (e) {
-                console.error("خطأ أثناء حفظ الجلسة:", e);
-                showMessageModal("الخطأ لا يمكن أن يحدث، لكن حدث. حاول مرة أخرى.");
+                showMessageModal("تم حفظ التحليل بنجاح.");
+            } catch (error) {
+                console.error("Error saving session:", error);
+                showMessageModal("حدث خطأ أثناء حفظ التحليل.");
             }
         };
 
-        /**
-         * عرض نافذة منبثقة برسالة.
-         * @param {string} message - الرسالة المراد عرضها.
-         */
-        const showMessageModal = (message) => {
-            const modal = document.getElementById('message-modal');
-            const modalText = document.getElementById('modal-text');
-            modalText.textContent = message;
-            modal.classList.remove('hidden');
-        };
-
-        /**
-         * إخفاء نافذة التجارة.
-         */
-        const hideMessageModal = () => {
-            const modal = document.getElementById('message-modal');
-            modal.classList.add('hidden');
-        };
-
-        /**
-         * تنسيق نص Markdown إلى HTML بشكل أكثر موثوقية.
-         * @param {string} markdownText - النص المكتوب بصيغة Markdown.
-         * @returns {string} - النص بتنسيق HTML.
-         */
-        const formatMarkdown = (markdownText) => {
-            if (!markdownText) return '';
-
-            let finalHtml = markdownText
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-                .replace(/^# (.*$)/gim, '<h1>$1</h1>');
-
-            finalHtml = finalHtml.replace(/(?:^\s*\* .*(?:\n|$))+/gm, (match) => {
-                const items = match.trim().split('\n').map(item => `<li>${item.replace(/^\s*\* /, '')}</li>`).join('');
-                return `<ul>${items}</ul>`;
-            });
-
-            const blocks = finalHtml.split('\n\n');
-            const processedBlocks = blocks.map(block => {
-                const trimmedBlock = block.trim();
-                if (!trimmedBlock) return '';
-                if (trimmedBlock.startsWith('<h') || trimmedBlock.startsWith('<ul')) {
-                    return trimmedBlock; 
-                }
-                return `<p>${trimmedBlock.replace(/\n/g, '<br>')}</p>`;
-            });
-
-            return processedBlocks.join('');
-        };
-
-
-        window.onload = () => {
-            const loginScreen = document.getElementById('login-screen');
-            const mainAppContainer = document.getElementById('main-app-container');
-            const loginForm = document.getElementById('login-form');
-            const closeModalBtn = document.getElementById('close-modal-btn');
-            const waitingScreen = document.getElementById('waiting-screen');
+        /* ====== Gemini (Google Generative) call ====== */
+        const getGeminiResponse = async (systemPrompt, userQuery, apiKey, imageBase64 = null) => {
+            // ملاحظة: تأكد أن مفتاح API صالح وأن النموذج متاح في مشروعك
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            const headers = { 'Content-Type': 'application/json' };
             
-            initFirebase();
-            
-            closeModalBtn.addEventListener('click', hideMessageModal);
-
-            // التحقق مما إذا كان المستخدم ينتظر الموافقة بالفعل عند إعادة تحميل الصفحة
-            const pendingRequestId = sessionStorage.getItem('loginRequestId');
-            if (pendingRequestId) {
-                loginScreen.classList.add('hidden');
-                waitingScreen.classList.remove('hidden');
-                const checkDbInterval = setInterval(() => {
-                    if (db) {
-                        clearInterval(checkDbInterval);
-                        listenForApproval(pendingRequestId);
+            const parts = [{ text: userQuery }];
+            if (imageBase64) {
+                parts.unshift({
+                    inlineData: {
+                        mimeType: 'image/jpeg',
+                        data: imageBase64
                     }
-                }, 100);
+                });
             }
 
+            const payload = {
+                contents: [{ parts }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+
+            for (let i = 0; i < MAX_RETRIES; i++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        let errText = await response.text().catch(()=>null);
+                        try {
+                            const errorBody = JSON.parse(errText || '{}');
+                            throw new Error(`API Error: ${response.status} ${response.statusText} - ${JSON.stringify(errorBody)}`);
+                        } catch (e) {
+                            throw new Error(`API Error: ${response.status} ${response.statusText} - ${errText}`);
+                        }
+                    }
+
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts[0].text) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else {
+                        const blockReason = result.candidates?.[0]?.finishReason;
+                        const safetyRatings = result.candidates?.[0]?.safetyRatings;
+                        console.warn("API response was blocked or empty.", { blockReason, safetyRatings });
+                        return `تم حظر الاستجابة لأسباب تتعلق بالسلامة: ${blockReason}.`;
+                    }
+                } catch (error) {
+                    console.error(`Attempt ${i + 1} failed:`, error);
+                    if (i === MAX_RETRIES - 1) {
+                        return `حدث خطأ بعد عدة محاولات للاتصال بالـ API. يرجى التحقق من مفتاح API الخاص بك واتصال الشبكة. (${error.message})`;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 2 ** i * 1000));
+                }
+            }
+        };
+
+        /* ====== واجهة المستخدم و الأحداث ====== */
+        const formatMarkdown = (text) => {
+            if(!text) return '';
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+        };
+
+        const imageToBase64 = (file) => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = error => reject(error);
+        });
+
+        const showMessageModal = (message) => {
+            document.getElementById('modal-text').textContent = message;
+            document.getElementById('message-modal').classList.remove('hidden');
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const loginForm = document.getElementById('login-form');
             loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const usernameInput = document.getElementById('username-input');
-                const passwordInput = document.getElementById('password-input');
-                const username = usernameInput.value;
-                const password = passwordInput.value;
+                 e.preventDefault();
+                 const username = document.getElementById('username-input').value.trim();
+                 const password = document.getElementById('password-input').value.trim();
 
-                // بيانات دخول المسؤول - يمكنك تغييرها من هنا
-                const ADMIN_USER = "soso_admin";
-                const ADMIN_PASS = "soso_pass_123";
-
-                if (username.trim() === '' || password.trim() === '') {
-                    showMessageModal("الرجاء إدخال اسم المستخدم وكلمة المرور.");
+                // Admin Login (تجريبي ـ استبدل بنظام آمن لاحقاً)
+                if (username === 'admin' && password === 'admin') {
+                    userRole = 'admin';
+                    // تسجيل دخول مجهول للتأكد من وجود uid (يمكنك تعديل للتسجيل الحقيقي لاحقًا)
+                    await signInAnonymously(auth).catch(()=>{});
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('main-app-container').classList.remove('hidden');
+                    document.getElementById('admin-panel').classList.remove('hidden');
+                    loadLoginRequests();
+                    loadUsers();
+                    loadTradingSessions(userId || 'admin-user');
                     return;
                 }
 
-                if (username === ADMIN_USER && password === ADMIN_PASS) {
-                    console.log("Admin login successful");
-                    userRole = 'admin';
-                    loginScreen.classList.add('hidden');
-                    mainAppContainer.classList.remove('hidden');
-                    document.getElementById('admin-panel').classList.remove('hidden');
-                    runMainApp();
-                } else {
-                    console.log("User login request submitted");
-                    await submitLoginRequest(username);
-                    loginScreen.classList.add('hidden');
-                    waitingScreen.classList.remove('hidden');
+                // Regular User Login: تحقق من وجود المستخدم مُسجّل في Collection users
+                try {
+                    const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'users');
+                    const q = query(usersRef, where("username", "==", username));
+                    const userSnapshot = await getDocs(q);
+
+                    if (userSnapshot.empty) {
+                        submitLoginRequest(username);
+                    } else {
+                        const userData = userSnapshot.docs[0].data();
+                        if(userData.status === 'active'){
+                            await signInAnonymously(auth).catch(()=>{});
+                            document.getElementById('login-screen').classList.add('hidden');
+                            document.getElementById('main-app-container').classList.remove('hidden');
+                            loadTradingSessions(userId);
+                        } else if (userData.status === 'suspended'){
+                            showMessageModal('حسابك معلق. يرجى التواصل مع المسؤول.');
+                        } else {
+                             showMessageModal('حالة الحساب غير معروفة.');
+                        }
+                    }
+                } catch (err) {
+                    console.error("Login flow error:", err);
+                    showMessageModal("حدث خطأ أثناء محاولة تسجيل الدخول.");
                 }
             });
 
-            const runMainApp = () => {
-                // تحميل سجل التحليلات للمستخدم الحالي
-                if(userId) {
-                    loadTradingSessions(userId);
+            // زرول الأحداث للتحليلات
+            document.getElementById('analyze-btn').addEventListener('click', () => handleAnalysis('technical'));
+            document.getElementById('fundamental-btn').addEventListener('click', () => handleAnalysis('fundamental'));
+            document.getElementById('direct-trade-btn').addEventListener('click', () => handleAnalysis('direct'));
+            document.getElementById('high-conviction-trade-btn').addEventListener('click', () => {
+                document.getElementById('invincible-modal').classList.remove('hidden');
+            });
+
+            document.getElementById('confirm-invincible-btn').addEventListener('click', () => {
+                 document.getElementById('invincible-modal').classList.add('hidden');
+                 handleAnalysis('high-conviction');
+            });
+
+            document.getElementById('cancel-invincible-btn').addEventListener('click', () => {
+                 document.getElementById('invincible-modal').classList.add('hidden');
+            });
+
+            document.getElementById('close-modal-btn').addEventListener('click', () => {
+                document.getElementById('message-modal').classList.add('hidden');
+            });
+
+            // رفع صورة من الواجهة
+            document.getElementById('upload-btn').addEventListener('click', () => {
+                document.getElementById('image-upload').click();
+            });
+
+            document.getElementById('image-upload').addEventListener('change', async (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    currentImageBase64 = await imageToBase64(file);
+                    const preview = document.getElementById('image-preview');
+                    preview.src = URL.createObjectURL(file);
+                    document.getElementById('image-preview-container').classList.remove('hidden');
                 }
+            });
 
-                // تحميل طلبات الدخول إذا كان المستخدم مسؤولاً
-                if (userRole === 'admin') {
-                    loadLoginRequests();
+            document.getElementById('clear-image-btn').addEventListener('click', () => {
+                currentImageBase64 = null;
+                document.getElementById('image-upload').value = '';
+                document.getElementById('image-preview-container').classList.add('hidden');
+                document.getElementById('image-preview').src = '';
+            });
+
+            document.getElementById('save-btn').addEventListener('click', () => {
+                const query = document.getElementById('input-query').value.trim();
+                const analysis = document.getElementById('output-text').innerText;
+                if(query && analysis){
+                    saveSession({ query, analysis });
+                } else {
+                    showMessageModal("لا يوجد تحليل للحفظ.");
                 }
+            });
 
-                // تعريف العناصر الواجهة
-                const analyzeBtn = document.getElementById('analyze-btn');
-                const fundamentalBtn = document.getElementById('fundamental-btn');
-                const directTradeBtn = document.getElementById('direct-trade-btn');
-                const highConvictionTradeBtn = document.getElementById('high-conviction-trade-btn');
-                const uploadBtn = document.getElementById('upload-btn');
-                const saveBtn = document.getElementById('save-btn');
-                const outputText = document.getElementById('output-text');
-                const inputQuery = document.getElementById('input-query');
-                const apiKeyInput = document.getElementById('api-key-input');
-                const tradingStyleSelect = document.getElementById('trading-style-select');
-                const imageUpload = document.getElementById('image-upload');
-                const loadingSpinner = document.getElementById('loading-spinner');
-                const imagePreviewContainer = document.getElementById('image-preview-container');
-                const imagePreview = document.getElementById('image-preview');
-                const clearImageBtn = document.getElementById('clear-image-btn');
-                const outputSection = document.getElementById('output-section');
-                const invincibleModal = document.getElementById('invincible-modal');
-                const confirmInvincibleBtn = document.getElementById('confirm-invincible-btn');
+            document.getElementById('confirm-delete-btn').addEventListener('click', () => {
+                deleteUser(userToDeleteId);
+                hideConfirmDeleteModal();
+            });
 
-                let uploadedImageBase64 = null;
-                let currentAnalysis = { query: "", analysis: "" };
+            document.getElementById('cancel-delete-btn').addEventListener('click', hideConfirmDeleteModal);
+        });
 
-                /**
-                 * تحويل الملف إلى السلسلة Base64.
-                 */
-                async function fileToBase64(file) {
-                    return new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = () => resolve(reader.result.split(',')[1]);
-                        reader.onerror = error => reject(error);
-                        reader.readAsDataURL(file);
-                    });
-                }
+        // Main analysis handler
+        const handleAnalysis = async (analysisType) => {
+            const queryText = document.getElementById('input-query').value.trim();
+            const apiKey = document.getElementById('api-key-input').value.trim();
+            const tradingStyle = document.getElementById('trading-style-select').value;
+            const outputText = document.getElementById('output-text');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const saveBtn = document.getElementById('save-btn');
+            const container = document.getElementById('main-app-container');
 
-                /**
-                 *إرساله إلى API.
-                 */
-                async function processQuery(prompt, retryCount = 0) {
-                    const apiKey = apiKeyInput.value.trim();
-                    if (!apiKey) {
-                        showMessageModal("الرجاء إدخال مفتاح API الخاص بك.");
-                        return;
-                    }
+            if (!apiKey) {
+                showMessageModal("الرجاء إدخال مفتاح API الخاص بك.");
+                return;
+            }
+            if (!queryText && !currentImageBase64) {
+                showMessageModal("الرجاء إدخال استفسار أو تحميل صورة.");
+                return;
+            }
 
-                    if (retryCount === 0) {
-                        loadingSpinner.classList.remove('hidden');
-                        outputText.innerHTML = '';
-                        saveBtn.classList.add('hidden');
-                        outputSection.classList.remove('bg-green-trade', 'bg-red-trade');
-                        outputSection.classList.add('bg-gray-800');
-                    }
+            loadingSpinner.classList.remove('hidden');
+            outputText.innerHTML = '';
+            saveBtn.classList.add('hidden');
+            container.classList.remove('bg-green-trade', 'bg-red-trade');
+            container.classList.add('bg-default');
 
-                    try {
-                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-                        const systemPrompt = `أنا مصمم لتحليل الأسواق بدقة عالية جداً. توقع مني توصيات ذات احتمالية نجاح مرتفعة، ولكن تذكر دائماً أن التداول ينطوي على مخاطر. أنا أقدم تحليلًا احترافيًا، معترفًا بأن السوق قد يتقلب.`;
-                            
-                        const parts = [{ text: prompt }];
+            let systemPrompt = `أنت "SOSO AI"، خبير تحليل أسواق مالية متمرس ومحنك. تتحدث اللغة العربية بطلاقة وبأسلوب احترافي وواثق. مهمتك هي تقديم تحليلات دقيقة، موجزة، وقابلة للتنفيذ بناءً على البيانات المقدمة. أسلوب تداولك الحالي هو "${tradingStyle}".`;
 
-                        if (uploadedImageBase64) {
-                            parts.push({
-                                inlineData: {
-                                    mimeType: "image/png",
-                                    data: uploadedImageBase64
-                                }
-                            });
-                        }
+            let fullQuery = queryText || '';
 
-                        const payload = {
-                            contents: [{ parts }],
-                            systemInstruction: { parts: [{ text: systemPrompt }] },
-                            tools: [{ "google_search": {} }],
-                        };
+            switch (analysisType) {
+                case 'technical':
+                    fullQuery = `بصفتك خبير تحليل فني، قدم تحليلًا فنيًا لـ "${fullQuery}" بناءً على أسلوب "${tradingStyle}". ركز على المؤشرات الرئيسية، مستويات الدعم والمقاومة، والأنماط السعرية.`;
+                    break;
+                case 'fundamental':
+                    fullQuery = `بصفتك خبير تحليل أساسي، قدم تحليلًا أساسيًا لـ "${fullQuery}" بناءً على أسلوب "${tradingStyle}". ركز على العوامل الاقتصادية، أخبار الشركة، والتقييم المالي.`;
+                    break;
+                case 'direct':
+                    fullQuery = `قدم توصية تداول مباشرة (شراء/بيع/انتظار) لـ "${fullQuery}" مع نقاط دخول وخروج ووقف خسارة محددة، متوافقة مع أسلوب "${tradingStyle}". يجب أن تكون التوصية في بداية الرد.`;
+                    break;
+                case 'high-conviction':
+                    systemPrompt += ` أنت الآن تقدم توصية ذات قناعة عالية، وهي تتطلب أقصى درجات الدقة والتحليل العميق. استخدم كل خبرتك لتقديم توصية حاسمة.`;
+                    fullQuery = `قدم توصية تداول ذات قناعة عالية جدًا لـ "${fullQuery}". يجب أن تكون هذه أفضل فرصة تراها في السوق حاليًا، مع تبرير قوي جدًا وتحديد نقاط الدخول والخروج ووقف الخسارة بدقة. ابدأ الرد بالتوصية مباشرة.`;
+                    break;
+            }
 
-                        const response = await fetch(apiUrl, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
+            if (currentImageBase64 && !queryText) {
+                fullQuery = "حلل الصورة المقدمة من منظور مالي وتداولي. ما هي الأنماط أو المؤشرات أو المعلومات التي يمكنك استخلاصها منها؟";
+            } else if (currentImageBase64 && queryText) {
+                fullQuery += " استخدم الصورة المرفقة كمرجع إضافي لتحليلك.";
+            }
 
-                        if (!response.ok) {
-                            if (response.status === 503 && retryCount < MAX_RETRIES) {
-                                console.log(`تم تلقي خطأ 503. إعادة المحاولة... محاولة ${retryCount + 1}`);
-                                const delay = Math.pow(2, retryCount) * 1000;
-                                setTimeout(() => processQuery(prompt, retryCount + 1), delay);
-                                return;
-                            }
-                            throw new Error(`خطأ API: ${response.status}`);
-                        }
+            const result = await getGeminiResponse(systemPrompt, fullQuery, apiKey, currentImageBase64);
 
-                        const result = await response.json();
-                        const candidate = result.candidates?.[0];
-                        let generatedText = "عذراً، حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.";
+            loadingSpinner.classList.add('hidden');
+            outputText.innerHTML = formatMarkdown(result);
+            saveBtn.classList.remove('hidden');
 
-                        if (candidate && candidate.content?.parts?.[0]?.text) {
-                            generatedText = candidate.content.parts[0].text;
-                        }
-
-                        currentAnalysis.query = inputQuery.value;
-                        currentAnalysis.analysis = generatedText;
-                        outputText.innerHTML = formatMarkdown(generatedText);
-                        saveBtn.classList.remove('hidden');
-
-                        if (prompt.includes('توصية') && (generatedText.includes('شراء') || generatedText.includes('بيع'))) {
-                            if (generatedText.includes('شراء')) {
-                                outputSection.classList.remove('bg-gray-800');
-                                outputSection.classList.add('bg-green-trade');
-                            } else if (generatedText.includes('بيع')) {
-                                outputSection.classList.remove('bg-gray-800');
-                                outputSection.classList.add('bg-red-trade');
-                            }
-                        }
-
-                    } catch (error) {
-                        console.error("خطأ في استدعاء واجهة برمجة التطبيقات:", error);
-                        let errorMessage = "عذراً، لا يمكن الوصول إلى الذكاء الاصطناعي حالياً. يرجى محاولة مرة أخرى لاحقاً.";
-                        if (error.message.includes('403')) {
-                            errorMessage = "خطأ في مفتاح الـ API. يرجى التأكد من أن مفتاحك صالح.";
-                        }
-                        outputText.innerHTML = errorMessage;
-                        saveBtn.classList.add('hidden');
-                    } finally {
-                        loadingSpinner.classList.add('hidden');
-                    }
-                }
-
-                // مستمعو الأحداث
-                uploadBtn.addEventListener('click', () => imageUpload.click());
-                imageUpload.addEventListener('change', async (event) => {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            imagePreview.src = e.target.result;
-                            imagePreviewContainer.classList.remove('hidden');
-                        };
-                        reader.readAsDataURL(file);
-                        uploadedImageBase64 = await fileToBase64(file);
-                        outputText.innerHTML = 'تم تحميل الصورة. أنا الآن أراها.';
-                    }
-                });
-
-                clearImageBtn.addEventListener('click', () => {
-                    uploadedImageBase64 = null;
-                    imagePreview.src = '';
-                    imagePreviewContainer.classList.add('hidden');
-                    imageUpload.value = '';
-                });
-
-                analyzeBtn.addEventListener('click', async () => {
-                    const query = inputQuery.value;
-                    const tradingStyle = tradingStyleSelect.value;
-                    if (query.trim() !== '') {
-                        const prompt = `استخدم أداة البحث المتاحة للحصول على أحدث البيانات المالية والتحليل الفني والأساسي لـ "${query}". بناءً على هذه المعلومات والاستراتيجية "${tradingStyle}"، أجرِ تحليلًا فنيًا مفصلاً. **أعد التقرير باستخدام لغة Markdown** مع استخدام عناوين (مثل **## الخلاصة**) وقوائم نقطية. يجب أن يغطي التحليل:
-- البحث عن الأنماط الفنية الرئيسية (مثل القمم والقيعان، القنوات السعرية، الأوتاد، الأعلام).
-- مستويات الدعم والمقاومة الرئيسية، مع ذكر نقاط الانعكاس المحتملة.
-- تحليل المؤشرات الفنية الرئيسية مثل مؤشر القوة النسبية (RSI) وMACD ومؤشر البولنجر باند، مع شرح مبسط لكل مؤشر.
-- تقييم للسيولة وتقلبات السعر.
-- تقييم مدى تأثير العوامل الاقتصادية الأساسية على العوامل الفنية.
-- مقترحات محددة وموجزة، مع ذكر العوامل التي قد تبطل هذا التحليل. اجعل التحليل منطقيًا ومباشرًا.`;
-                        await processQuery(prompt);
-                    } else {
-                        showMessageModal("الرجاء النص سؤال لتحليله.");
-                    }
-                });
-
-                fundamentalBtn.addEventListener('click', async () => {
-                    const query = inputQuery.value;
-                    const tradingStyle = tradingStyleSelect.value;
-                    if (query.trim() !== '') {
-                        const prompt = `استخدم أداة البحث المتاحة للحصول على أحدث البيانات الاقتصادية والأخبار المتعلقة بـ "${query}". بناءً على هذه المعلومات والاستراتيجية "${tradingStyle}"، أجرِ تحليلًا أساسيًا. **أعد التقرير باستخدام لغة Markdown** مع استخدام عناوين (مثل **## النظرة العامة**) وقوائم نقطية. يجب أن يغطي التحليل:
-- العوامل الاقتصادية الكلية الحالية (مثل أسعار الفائدة، وسياسات البنوك المركزية) وكيفية تأثيرها على الأصل.
-- المستجدات الخاصة بالمشروع أو الشركة (أخبار الشراكات، التحديثات الفنية، التقارير المالية، الأرباح، الإفصاحات).
-- العوامل الجيوسياسية والتنظيمية المحتملة.
-- تقييم المعنويات العامة في السوق.
-- التحديات والمخاطر المحتملة التي قد تؤثر على الأصل.
-- المتغيرات المحتملة القادمة التي قد تؤثر على الأصل. اجعل التقرير واضحًا، ومباشرًا، وغنيًا بالمعلومات، مع إبراز نقاط القوة والضعف المحتملة.`;
-                        await processQuery(prompt);
-                    } else {
-                        showMessageModal("الرجاء النص سؤال لتحليله.");
-                    }
-                });
-
-                directTradeBtn.addEventListener('click', async () => {
-                    const query = inputQuery.value;
-                    const tradingStyle = tradingStyleSelect.value;
-                    if (query.trim() !== '') {
-                        const prompt = `استخدم أداة البحث المتاحة للحصول على أحدث البيانات والأخبار حول "${query}". بناءً على هذه المعلومات والاستراتيجية "${tradingStyle}"، قدم نصيحة تداول واحدة وواضحة جدًا. **استخدم لغة Markdown لترتيب المعلومات** يجب أن تحتوي على:
-- **التوصية:** (شراء/بيع).
-- **نقطة الدخول الرئيسية:** [السعر].
-- **نقطة وقف الخسارة:** [السعر].
-- **هدف الربح:** [السعر].
-- **المبرر:** ملخص قصير جدًا للسبب الرئيسي للتوصية. اجعل التقرير موجزًا، ومباشرًا، وليس طويلاً.`;
-                        await processQuery(prompt);
-                    } else {
-                        showMessageModal("الرجاء النص سؤال لتحليله.");
-                    }
-                });
-
-                highConvictionTradeBtn.addEventListener('click', () => {
-                    const query = inputQuery.value;
-                    if (query.trim() !== '') {
-                        invincibleModal.classList.remove('hidden');
-                    } else {
-                        showMessageModal("الرجاء كتابة سؤال لتحليله.");
-                    }
-                });
-
-                confirmInvincibleBtn.addEventListener('click', async () => {
-                    invincibleModal.classList.add('hidden');
-                    const query = inputQuery.value;
-                    const tradingStyle = tradingStyleSelect.value;
-                    const prompt = `أنا أثق بقدراتك التحليلية الفائقة. استخدم أداة البحث المتاحة للحصول على أحدث وأدق البيانات حول "${query}". بناءً على هذه المعلومات والاستراتيجية "${tradingStyle}"، قدم لي توصية تداول **ذات قناعة عالية جدًا**. **استخدم لغة Markdown لترتيب المعلومات** يجب أن تحتوي على:
-- **التوصية:** (شراء/بيع).
-- **نقطة الدخول الرئيسية:** [السعر].
-- **نقطة وقف الخسارة:** [السعر].
-- **هدف الربح:** [السعر].
-- **المبرر:** تحليل شامل ومقنع يوضح سبب هذه القناعة العالية، مع ذكر العوامل الفنية والأساسية الحاسمة. يجب أن يكون هذا التحليل أكثر تفصيلاً من التوصية العادية. قدمه بثقة مطلقة.`;
-                    await processQuery(prompt);
-                });
-
-                saveBtn.addEventListener('click', () => {
-                    if (currentAnalysis.analysis && currentAnalysis.query) {
-                        saveSession(currentAnalysis);
-                    } else {
-                        showMessageModal("لا يوجد تحليل لحفظه.");
-                    }
-                });
+            if (result.includes("شراء")) {
+                container.classList.add('bg-green-trade');
+            } else if (result.includes("بيع")) {
+                container.classList.add('bg-red-trade');
             }
         };
     </script>
 </body>
 </html>
-
