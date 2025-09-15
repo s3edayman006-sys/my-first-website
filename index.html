@@ -2,18 +2,39 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title data-lang-key="pageTitle">JO AI</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com" defer></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet"/>
+
+  <!-- Performance preconnect/dns-prefetch -->
+  <link rel="preconnect" href="https://generativelanguage.googleapis.com" crossorigin/>
+  <link rel="dns-prefetch" href="https://generativelanguage.googleapis.com"/>
+  <link rel="preconnect" href="https://api.openai.com" crossorigin/>
+  <link rel="dns-prefetch" href="https://api.openai.com"/>
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin/>
+  <link rel="dns-prefetch" href="https://www.gstatic.com"/>
+
   <style>
     body { font-family: 'Cairo', sans-serif; background-color: #0c1521; }
+
+    /* Containers + Shadows */
     .container { background-color: #1f2937; border: 1px solid #374151; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
     #main-app-container.container { background-color: initial; }
+    .glowing-shadow { box-shadow: 0 0 15px rgba(255,255,255,0.1), 0 0 30px rgba(74,222,128,0.2), 0 0 45px rgba(74,222,128,0.1); }
 
+    /* Panels */
     .control-panel { background: linear-gradient(135deg, #1A2033 0%, #171E2D 100%); border: 1px solid #334155; }
+    .chat-panel { background: linear-gradient(135deg, #121a29 0%, #0f1522 100%); border: 1px solid #334155; }
+
+    /* Buttons */
     .button-style {
       background: linear-gradient(145deg, #0f172a 0%, #0c1521 100%); color: white;
       transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; overflow: hidden;
@@ -27,11 +48,6 @@
       transform: translate(-50%, -50%) scale(0);
     }
     .button-style:hover::before { transform: translate(-50%, -50%) scale(1); }
-    .modal-overlay { background-color: rgba(12, 21, 33, 0.8); backdrop-filter: blur(4px); }
-    .modal-content { background-color: #1f2937; border: 1px solid #334155; box-shadow: 0 8px 25px rgba(0,0,0,0.4); }
-    .loading-animation { border-top-color: #4ade80; animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .glowing-shadow { box-shadow: 0 0 15px rgba(255,255,255,0.1), 0 0 30px rgba(74,222,128,0.2), 0 0 45px rgba(74,222,128,0.1); }
     .glowing-shadow-green { box-shadow: 0 0 15px rgba(74, 222, 128, 0.2), 0 0 30px rgba(74, 222, 128, 0.1), 0 0 45px rgba(74, 222, 128, 0.05); }
     .glowing-shadow-green:hover { box-shadow: 0 0 20px rgba(74, 222, 128, 0.4), 0 0 40px rgba(74, 222, 128, 0.2), 0 0 60px rgba(74, 222, 128, 0.1); }
 
@@ -46,60 +62,43 @@
       background-size: cover; background-position: center center; background-repeat: no-repeat;
       transition: background-color 0.5s ease-in-out;
     }
-    .bg-green-trade {
-      background-color: #064e3b;
-      background-image:
-        radial-gradient(circle at 15% 15%, rgba(74, 222, 128, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(74, 222, 128, 0.15) 0%, transparent 40%),
-        repeating-linear-gradient(0deg, rgba(74, 222, 128, 0.05) 0%, rgba(74, 222, 128, 0.05) 1px, transparent 1px, transparent 20px),
-        repeating-linear-gradient(90deg, rgba(74, 222, 128, 0.05) 0%, rgba(74, 222, 128, 0.05) 1px, transparent 1px, transparent 20px);
-      background-size: cover; background-position: center center; background-repeat: no-repeat;
-      transition: background-color 0.5s ease-in-out;
-    }
-    .bg-red-trade {
-      background-color: #7f1d1d;
-      background-image:
-        radial-gradient(circle at 15% 15%, rgba(252, 165, 165, 0.1) 0%, transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(252, 165, 165, 0.1) 0%, transparent 40%),
-        repeating-linear-gradient(0deg, rgba(252, 165, 165, 0.03) 0%, rgba(252, 165, 165, 0.03) 1px, transparent 1px, transparent 20px),
-        repeating-linear-gradient(90deg, rgba(252, 165, 165, 0.03) 0%, rgba(252, 165, 165, 0.03) 1px, transparent 1px, transparent 20px);
-      background-size: cover; background-position: center center; background-repeat: no-repeat;
-      transition: background-color 0.5s ease-in-out;
-    }
+    .bg-green-trade { background-color: #064e3b; }
+    .bg-red-trade { background-color: #7f1d1d; }
 
-    /* Multi-image preview (shared) */
+    /* Image previews */
     .image-preview-thumbnail { width: 100px; height: 100px; object-fit: cover; border-radius: 0.5rem; border: 2px solid #374151; }
-    .remove-image-btn {
-      position: absolute; top: -0.5rem; left: -0.5rem;
-      background-color: #ef4444; color: white; border-radius: 9999px; width: 1.75rem; height: 1.75rem;
-      display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s;
-    }
+    .remove-image-btn { position: absolute; top: -0.5rem; left: -0.5rem; background-color: #ef4444; color: white; border-radius: 9999px; width: 1.75rem; height: 1.75rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s; }
     html[dir="ltr"] .remove-image-btn { left: auto; right: -0.5rem; }
     .remove-image-btn:hover { transform: scale(1.1); }
 
-    /* Chat panel styles */
-    .chat-panel { background: linear-gradient(135deg, #121a29 0%, #0f1522 100%); border: 1px solid #334155; }
+    /* Chat */
     .chat-messages { max-height: 420px; overflow-y: auto; padding: 0.75rem; }
-    .chat-bubble {
-      display: inline-block; padding: 0.6rem 0.8rem; border-radius: 0.75rem; line-height: 1.4; font-size: 0.95rem;
-      border: 1px solid #303b50;
-    }
+    .chat-bubble { display: inline-block; padding: 0.6rem 0.8rem; border-radius: 0.75rem; line-height: 1.4; font-size: 0.95rem; border: 1px solid #303b50; }
     .chat-bubble-user { background: #0b1220; color: #e5e7eb; }
     .chat-bubble-assistant { background: #122033; color: #d1d5db; }
     .chat-row { margin: 0.4rem 0; }
     .chat-row.user { text-align: end; }
     .chat-row.assistant { text-align: start; }
     .chat-image-thumb { width: 72px; height: 72px; object-fit: cover; border-radius: 0.5rem; border: 1px solid #374151; }
+
+    /* Status bar */
+    .status-bar { background: linear-gradient(135deg, #0f1626 0%, #0d1524 100%); border: 1px solid #334155; }
+    .status-pill { border: 1px solid #334155; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; }
+    .loading-animation { border-top-color: #4ade80; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Grid layout: left controls, right output/chat */
+    .app-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 1024px) { .app-grid { grid-template-columns: 1fr 1.4fr; gap: 1.25rem; } }
   </style>
 </head>
 <body class="p-4 min-h-screen flex flex-col items-center justify-center text-white">
-    <!-- أزرار تبديل اللغة -->
+  <!-- تبديل اللغة -->
   <div class="fixed top-4 right-4 z-50 flex gap-2">
     <button id="lang-ar" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-semibold text-sm transition-colors duration-200">العربية</button>
     <button id="lang-en" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md font-semibold text-sm transition-colors duration-200">English</button>
   </div>
-
-  <!-- الشاشة الترحيبية -->
+    <!-- الشاشة الترحيبية -->
   <div id="welcome-screen" class="min-h-screen w-full flex flex-col items-center justify-center p-4 text-white bg-gradient-to-br from-[#0c1521] to-[#1a2033] via-[#10192a]">
     <div class="container max-w-4xl p-8 rounded-3xl glowing-shadow text-center md:text-right relative overflow-hidden">
       <div class="relative z-10">
@@ -147,123 +146,184 @@
     </div>
   </div>
     <!-- الحاوية الرئيسية -->
-  <div id="main-app-container" class="container w-full max-w-4xl p-8 rounded-3xl glowing-shadow hidden bg-default">
+  <div id="main-app-container" class="container w-full max-w-6xl p-6 md:p-8 rounded-3xl glowing-shadow hidden bg-default">
     <!-- رأس الصفحة -->
-    <div class="text-center mb-8">
+    <div class="text-center mb-6">
       <h1 class="text-4xl font-bold text-white mb-2">JO AI</h1>
       <p class="text-gray-400" data-lang-key="mainAppSubtitle">أداة تحليل السوق المدعومة بالذكاء الاصطناعي</p>
       <p id="user-id-display" class="text-xs text-gray-500 mt-2" data-lang-key="idPrefix">المعرف: </p>
     </div>
 
-    <!-- لوحة التحكم في التداول -->
-    <div class="control-panel p-6 rounded-3xl mb-6">
-      <!-- مزوّد النموذج + المفاتيح -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <div>
-          <label for="provider-select" class="block text-sm font-medium text-gray-300 mb-2" data-lang-key="providerLabel">موفّر النموذج:</label>
-          <select id="provider-select" class="w-full p-3 text-sm text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300">
-            <option value="gemini" selected data-lang-key="providerGemini">Google Gemini</option>
-            <option value="openai" data-lang-key="providerOpenAI">OpenAI (ChatGPT)</option>
-          </select>
+    <!-- شريط الحالة الجديد -->
+    <div class="status-bar p-4 rounded-2xl mb-6 flex flex-col md:flex-row gap-4 items-start md:items-center">
+      <div class="flex items-center gap-2">
+        <span class="status-pill text-gray-300" id="status-badge">Idle</span>
+        <span class="text-xs text-gray-400" id="status-warmup"></span>
+      </div>
+      <div class="flex-1 grid grid-cols-2 md:grid-cols-5 gap-3 text-sm">
+        <div class="bg-gray-900/40 border border-gray-700 rounded-lg p-2">
+          <div class="text-gray-400" data-lang-key="latencyLabel">الزمن</div>
+          <div class="text-green-300 font-semibold" id="status-latency">—</div>
         </div>
-        <div>
-          <label for="api-key-input" class="block text-sm font-medium text-gray-300 mb-2" data-lang-key="apiKeyLabel">مفتاح API:</label>
-          <input type="text" id="api-key-input" class="w-full p-3 text-sm text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder-gray-500" placeholder="أدخل مفتاح API الخاص بك من Google AI Studio" data-lang-key="apiKeyPlaceholder" />
+        <div class="bg-gray-900/40 border border-gray-700 rounded-lg p-2">
+          <div class="text-gray-400" data-lang-key="avgLatencyLabel">المتوسط</div>
+          <div class="text-green-300 font-semibold" id="status-avg-latency">—</div>
+        </div>
+        <div class="bg-gray-900/40 border border-gray-700 rounded-lg p-2">
+          <div class="text-gray-400" data-lang-key="analysisQueueLabel">طابور التحليل</div>
+          <div class="text-blue-300 font-semibold" id="status-queue-analysis">0</div>
+        </div>
+        <div class="bg-gray-900/40 border border-gray-700 rounded-lg p-2">
+          <div class="text-gray-400" data-lang-key="chatQueueLabel">طابور الشات</div>
+          <div class="text-blue-300 font-semibold" id="status-queue-chat">0</div>
+        </div>
+        <div class="flex gap-2 items-center">
+          <button id="cancel-analysis-btn" class="px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xs rounded-md" data-lang-key="cancelAnalysis">إلغاء التحليل</button>
+          <button id="cancel-chat-btn" class="px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xs rounded-md" data-lang-key="cancelChat">إلغاء الشات</button>
         </div>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div>
-          <label for="openai-api-key-input" class="block text-sm font-medium text-gray-300 mb-2" data-lang-key="openaiApiKeyLabel">مفتاح OpenAI:</label>
-          <input type="password" id="openai-api-key-input" class="w-full p-3 text-sm text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder-gray-500" placeholder="أدخل مفتاح OpenAI (اختياري)" />
-          <p class="text-xs text-gray-500 mt-1" data-lang-key="openaiNote">لن يظهر هذا الحقل إلا عند اختيار OpenAI.</p>
-        </div>
-      </div>
+    </div>
 
-      <!-- إدخال النص والصور -->
-      <div class="grid grid-cols-1 gap-6">
-        <div>
-          <textarea id="input-query" rows="4" class="w-full p-4 text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder-gray-400" placeholder="اسألني عن السوق... أي شيء. أنا أعرف الإجابة." data-lang-key="inputQueryPlaceholder"></textarea>
-          <input type="file" id="image-upload" accept="image/*" class="hidden" multiple>
-          <div id="image-preview-container" class="hidden mt-4 p-2 rounded-lg border border-gray-700 bg-gray-900/50">
-            <div id="image-previews-wrapper" class="flex flex-wrap gap-4"></div>
+    <!-- شبكة التطبيق: يسار (تحكم) + يمين (المخرجات/الشات) -->
+    <div class="app-grid">
+      <!-- لوحة التحكم في التداول (منظمة) -->
+      <div class="control-panel p-6 rounded-3xl space-y-6">
+        <!-- القسم: مزوّد النموذج + المفاتيح -->
+        <section class="space-y-4">
+          <h3 class="text-lg font-bold text-green-400">1) <span data-lang-key="providerLabel">موفّر النموذج:</span> & <span data-lang-key="apiKeyLabel">مفتاح API:</span></h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="provider-select" class="block text-sm font-medium text-gray-300 mb-2" data-lang-key="providerLabel">موفّر النموذج:</label>
+              <select id="provider-select" class="w-full p-3 text-sm text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300">
+                <option value="gemini" selected data-lang-key="providerGemini">Google Gemini</option>
+                <option value="openai" data-lang-key="providerOpenAI">OpenAI (ChatGPT)</option>
+              </select>
+            </div>
+            <div>
+              <label for="api-key-input" class="block text-sm font-medium text-gray-300 mb-2" data-lang-key="apiKeyLabel">مفتاح API:</label>
+              <input type="text" id="api-key-input" class="w-full p-3 text-sm text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder-gray-500" placeholder="أدخل مفتاح API الخاص بك من Google AI Studio" data-lang-key="apiKeyPlaceholder" />
+            </div>
           </div>
-        </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="openai-api-key-input" class="block text-sm font-medium text-gray-300 mb-2" data-lang-key="openaiApiKeyLabel">مفتاح OpenAI:</label>
+              <input type="password" id="openai-api-key-input" class="w-full p-3 text-sm text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder-gray-500" placeholder="أدخل مفتاح OpenAI (اختياري)" />
+              <p class="text-xs text-gray-500 mt-1" data-lang-key="openaiNote">لن يظهر هذا الحقل إلا عند اختيار OpenAI.</p>
+            </div>
 
-        <!-- طريقة اللعب + المدرسة التحليلية -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- القسم: أداء (تسريع + تحمل الضغط) -->
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2" data-lang-key="performanceLabel">الأداء:</label>
+              <div class="flex flex-col gap-2">
+                <label class="inline-flex items-center gap-2 text-sm text-gray-300">
+                  <input id="fast-mode-toggle" type="checkbox" class="accent-green-500" checked>
+                  <span data-lang-key="fastModeLabel">تسريع الاستجابة</span>
+                </label>
+                <label class="inline-flex items-center gap-2 text-sm text-gray-300">
+                  <input id="highload-mode-toggle" type="checkbox" class="accent-green-500" checked>
+                  <span data-lang-key="highLoadLabel">تحمّل الضغط العالي</span>
+                </label>
+                <p class="text-xs text-gray-500" data-lang-key="performanceHint">يقوم هذا بتحسين زمن الاستجابة، إدارة الطوابير، والـFallback التلقائي عند الضغط.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- القسم: الاستراتيجية -->
+        <section class="space-y-4">
+          <h3 class="text-lg font-bold text-green-400">2) <span data-lang-key="strategyTitle">الاستراتيجية</span></h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="trading-style-select" class="block text-sm font-medium text-gray-300 mb-2" data-lang-key="tradingStyleLabel">طريقة اللعب:</label>
+              <select id="trading-style-select" class="w-full p-3 text-sm text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300">
+                <option value="سكالبينج" data-lang-key="scalpingOption">سكالبينج (Scalping)</option>
+                <option value="سوينغ" selected data-lang-key="swingOption">سوينغ (Swing)</option>
+                <option value="استثمار" data-lang-key="investmentOption">استثمار (Investment)</option>
+              </select>
+            </div>
+            <div>
+              <label for="school-select" class="block text-sm font-medium text-gray-300 mb-2" data-lang-key="schoolLabel">المدرسة التحليلية:</label>
+              <select id="school-select" class="w-full p-3 text-sm text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300">
+                <option value="ICT" selected data-lang-key="schoolICT">مدرسة ICT</option>
+                <option value="SMC" data-lang-key="schoolSMC">مدرسة SMC</option>
+                <option value="الزمنية" data-lang-key="schoolTime">المدرسة الزمنية</option>
+                <option value="الموجية (إليوت)" data-lang-key="schoolElliott">المدرسة الموجية (إليوت)</option>
+              </select>
+            </div>
+          </div>
+        </section>
+                <!-- القسم: الإدخال والصور -->
+        <section class="space-y-4">
+          <h3 class="text-lg font-bold text-green-400">3) <span data-lang-key="inputSectionTitle">الإدخال والصور</span></h3>
           <div>
-            <label for="trading-style-select" class="block text-sm font-medium text-gray-300 mb-2" data-lang-key="tradingStyleLabel">طريقة اللعب:</label>
-            <select id="trading-style-select" class="w-full p-3 text-sm text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300">
-              <option value="سكالبينج" data-lang-key="scalpingOption">سكالبينج (Scalping)</option>
-              <option value="سوينغ" selected data-lang-key="swingOption">سوينغ (Swing)</option>
-              <option value="استثمار" data-lang-key="investmentOption">استثمار (Investment)</option>
-            </select>
+            <textarea id="input-query" rows="4" class="w-full p-4 text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder-gray-400" placeholder="اسألني عن السوق... أي شيء. أنا أعرف الإجابة." data-lang-key="inputQueryPlaceholder"></textarea>
           </div>
           <div>
-            <label for="school-select" class="block text-sm font-medium text-gray-300 mb-2" data-lang-key="schoolLabel">المدرسة التحليلية:</label>
-            <select id="school-select" class="w-full p-3 text-sm text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300">
-              <option value="ICT" selected data-lang-key="schoolICT">مدرسة ICT</option>
-              <option value="SMC" data-lang-key="schoolSMC">مدرسة SMC</option>
-              <option value="الزمنية" data-lang-key="schoolTime">المدرسة الزمنية</option>
-              <option value="الموجية (إليوت)" data-lang-key="schoolElliott">المدرسة الموجية (إليوت)</option>
-            </select>
+            <input type="file" id="image-upload" accept="image/*" class="hidden" multiple>
+            <div class="flex justify-start">
+              <button id="upload-btn" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all duration-300" data-lang-key="uploadImageBtn">تحميل صور</button>
+            </div>
+            <div id="image-preview-container" class="hidden mt-4 p-2 rounded-lg border border-gray-700 bg-gray-900/50">
+              <div id="image-previews-wrapper" class="flex flex-wrap gap-4"></div>
+            </div>
           </div>
-        </div>
+        </section>
 
-        <!-- أزرار التحكم -->
-        <div>
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <!-- القسم: الأزرار -->
+        <section class="space-y-3">
+          <h3 class="text-lg font-bold text-green-400">4) <span data-lang-key="actionsTitle">الأوامر السريعة</span></h3>
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <button id="analyze-btn" class="p-3 button-style rounded-lg font-semibold shadow-md" data-lang-key="technicalAnalysisBtn">تحليل فني</button>
             <button id="fundamental-btn" class="p-3 button-style rounded-lg font-semibold shadow-md" data-lang-key="fundamentalAnalysisBtn">تحليل أساسي</button>
             <button id="direct-trade-btn" class="p-3 button-style rounded-lg font-semibold shadow-md" data-lang-key="directTradeBtn">توصية تداول</button>
             <button id="high-conviction-trade-btn" class="p-3 button-style rounded-lg font-semibold shadow-md" data-lang-key="highConvictionBtn">توصية ذات قناعة عالية</button>
           </div>
-          <div class="mt-4 flex justify-center gap-3">
-            <button id="upload-btn" class="w-2/3 p-3 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-105" data-lang-key="uploadImageBtn">تحميل صور</button>
+        </section>
+      </div>
+
+      <!-- يمين: المخرجات + الشات -->
+      <div class="space-y-6">
+        <!-- قسم مخرجات التحليل -->
+        <section id="output-section" class="relative bg-gray-800 rounded-lg p-4 min-h-[200px] border border-gray-700 shadow-inner">
+          <div id="loading-spinner" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div class="loading-animation w-12 h-12 border-4 rounded-full"></div>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- قسم مخرجات التحليل -->
-    <div id="output-section" class="relative bg-gray-800 rounded-lg p-4 min-h-[200px] border border-gray-700 shadow-inner">
-      <div id="loading-spinner" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <div class="loading-animation w-12 h-12 border-4 rounded-full"></div>
-      </div>
-      <div id="output-text" class="prose prose-invert max-w-none text-gray-300 text-sm leading-relaxed"></div>
-      <div class="flex justify-end mt-4">
-        <button id="save-btn" class="hidden px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white font-semibold text-sm rounded-lg transition-all duration-300 transform hover:scale-105" data-lang-key="saveButton">حفظ</button>
-      </div>
-    </div>
-
-    <!-- لوحة الشات المتقدّم -->
-    <div id="chat-panel" class="chat-panel p-6 rounded-3xl mt-6">
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-2xl font-bold text-white" data-lang-key="chatTitle">شات GPT متقدّم</h2>
-        <div class="flex items-center gap-2 text-xs text-gray-400">
-          <span class="hidden md:inline" data-lang-key="chatHint">يدعم السياق والصور • اختر المزوّد من الأعلى</span>
-        </div>
-      </div>
-
-      <div id="chat-messages" class="chat-messages bg-gray-900/40 rounded-lg border border-gray-700"></div>
-
-      <div class="mt-4">
-        <textarea id="chat-input" rows="3" class="w-full p-3 text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder-gray-400" placeholder="اكتب رسالتك..." data-lang-key="chatPlaceholder"></textarea>
-
-        <!-- مرفقات صور الشات -->
-        <input type="file" id="chat-image-upload" accept="image/*" class="hidden" multiple>
-        <div id="chat-image-preview-container" class="hidden mt-3 p-2 rounded-lg border border-gray-700 bg-gray-900/50">
-          <div id="chat-image-previews-wrapper" class="flex flex-wrap gap-3"></div>
-        </div>
-
-        <div class="flex items-center gap-3 mt-3">
-          <button id="chat-upload-btn" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all duration-300" data-lang-key="uploadImageChatBtn">إرفاق صور</button>
-          <button id="chat-clear-btn" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all duration-300" data-lang-key="clearChat">تفريغ المحادثة</button>
-          <div class="ml-auto flex items-center gap-2">
-            <div id="chat-loading" class="hidden loading-animation w-6 h-6 border-2 rounded-full"></div>
-            <button id="chat-send-btn" class="px-6 py-2 button-style rounded-lg font-semibold" data-lang-key="sendButton">إرسال</button>
+          <div id="output-text" class="prose prose-invert max-w-none text-gray-300 text-sm leading-relaxed"></div>
+          <div class="flex justify-end mt-4">
+            <button id="save-btn" class="hidden px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white font-semibold text-sm rounded-lg transition-all duration-300 transform hover:scale-105" data-lang-key="saveButton">حفظ</button>
           </div>
-        </div>
+        </section>
+
+        <!-- لوحة الشات المتقدّم -->
+        <section id="chat-panel" class="chat-panel p-6 rounded-3xl">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-2xl font-bold text-white" data-lang-key="chatTitle">شات GPT متقدّم</h2>
+            <div class="flex items-center gap-2 text-xs text-gray-400">
+              <span class="hidden md:inline" data-lang-key="chatHint">يدعم السياق والصور • اختر المزوّد من الأعلى</span>
+            </div>
+          </div>
+
+          <div id="chat-messages" class="chat-messages bg-gray-900/40 rounded-lg border border-gray-700"></div>
+
+          <div class="mt-4">
+            <textarea id="chat-input" rows="3" class="w-full p-3 text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder-gray-400" placeholder="اكتب رسالتك..." data-lang-key="chatPlaceholder"></textarea>
+
+            <!-- مرفقات صور الشات -->
+            <input type="file" id="chat-image-upload" accept="image/*" class="hidden" multiple>
+            <div id="chat-image-preview-container" class="hidden mt-3 p-2 rounded-lg border border-gray-700 bg-gray-900/50">
+              <div id="chat-image-previews-wrapper" class="flex flex-wrap gap-3"></div>
+            </div>
+
+            <div class="flex items-center gap-3 mt-3">
+              <button id="chat-upload-btn" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all duration-300" data-lang-key="uploadImageChatBtn">إرفاق صور</button>
+              <button id="chat-clear-btn" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all duration-300" data-lang-key="clearChat">تفريغ المحادثة</button>
+              <div class="ml-auto flex items-center gap-2">
+                <div id="chat-loading" class="hidden loading-animation w-6 h-6 border-2 rounded-full"></div>
+                <button id="chat-send-btn" class="px-6 py-2 button-style rounded-lg font-semibold" data-lang-key="sendButton">إرسال</button>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
 
@@ -279,9 +339,9 @@
       </div>
     </div>
   </div>
-    <!-- نموذج الرسالة -->
-  <div id="message-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay">
-    <div class="modal-content p-6 rounded-xl shadow-2xl w-full max-w-sm">
+    <!-- نوافذ منبثقة -->
+  <div id="message-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay" style="background-color: rgba(12,21,33,0.8); backdrop-filter: blur(4px);">
+    <div class="modal-content p-6 rounded-xl shadow-2xl w-full max-w-sm" style="background-color:#1f2937; border:1px solid #334155; box-shadow:0 8px 25px rgba(0,0,0,0.4)">
       <div class="text-center">
         <p id="modal-text" class="text-lg text-white mb-4"></p>
         <button id="close-modal-btn" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full transition-transform duration-200 transform hover:scale-105" data-lang-key="okButton">موافق</button>
@@ -290,8 +350,8 @@
   </div>
 
   <!-- نموذج تأكيد التوصية ذات القناعة العالية -->
-  <div id="invincible-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay">
-    <div class="modal-content p-6 rounded-xl shadow-2xl w-full max-w-lg">
+  <div id="invincible-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay" style="background-color: rgba(12,21,33,0.8); backdrop-filter: blur(4px);">
+    <div class="modal-content p-6 rounded-xl shadow-2xl w-full max-w-lg" style="background-color:#1f2937; border:1px solid #334155; box-shadow:0 8px 25px rgba(0,0,0,0.4)">
       <div class="text-center">
         <h3 class="text-2xl font-bold text-green-400 mb-4" data-lang-key="highConvictionModalTitle">توصية ذات قناعة عالية</h3>
         <p class="text-gray-300 mb-6" data-lang-key="highConvictionModalText">تحليلاتي مبنية على بيانات لا حصر لها، وهذه التوصية تتمتع بأعلى قناعة ممكنة. ومع ذلك، لا يوجد أي ضمان للنجاح في السوق. هل أنت جاهز للمضي قدماً؟</p>
@@ -304,8 +364,8 @@
   </div>
 
   <!-- نموذج تأكيد الحذف -->
-  <div id="confirm-delete-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay">
-    <div class="modal-content p-6 rounded-xl shadow-2xl w-full max-w-sm">
+  <div id="confirm-delete-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay" style="background-color: rgba(12,21,33,0.8); backdrop-filter: blur(4px);">
+    <div class="modal-content p-6 rounded-xl shadow-2xl w-full max-w-sm" style="background-color:#1f2937; border:1px solid #334155; box-shadow:0 8px 25px rgba(0,0,0,0.4)">
       <div class="text-center">
         <h3 class="text-xl font-bold text-red-400 mb-4" data-lang-key="confirmDeleteTitle">تأكيد الحذف</h3>
         <p id="confirm-delete-text" class="text-lg text-white mb-6" data-lang-key="confirmDeleteText">هل أنت متأكد أنك تريد حذف هذا المستخدم؟ لا يمكن التراجع عن هذا الإجراء.</p>
@@ -316,8 +376,9 @@
       </div>
     </div>
   </div>
-    <script type="module">
-    // Firebase & Google AI + App logic (with Chat + School + Providers)
+    <!-- سكريبت التطبيق -->
+  <script type="module">
+    // Firebase & Google AI + App logic (with High-Load + Fast Mode)
 
     // Firebase (CDN) - v12.2.1
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
@@ -338,7 +399,19 @@
     const appId = 'default-app-id';
     let currentLanguage = localStorage.getItem('appLang') || 'ar';
 
-    // ترجمات
+    // High-load & fast mode
+    let fastModeEnabled = JSON.parse(localStorage.getItem('fastModeEnabled') ?? 'true');
+    let highLoadEnabled = JSON.parse(localStorage.getItem('highLoadEnabled') ?? 'true');
+
+    // Abort controllers
+    let analysisAbortController = null;
+    let chatAbortController = null;
+
+    // Status data
+    const latencyHistory = [];
+    const MAX_LATENCY_HISTORY = 10;
+
+    // ترجمات (مع مفاتيح الأداء الجديدة)
     const translations = {
       'ar': {
         pageTitle: 'JO AI',
@@ -403,7 +476,6 @@
         buyKeyword: 'شراء',
         sellKeyword: 'بيع',
 
-        // شات
         chatTitle: 'شات GPT متقدّم',
         chatPlaceholder: 'اكتب رسالتك...',
         sendButton: 'إرسال',
@@ -411,7 +483,6 @@
         uploadImageChatBtn: 'إرفاق صور',
         chatHint: 'يدعم السياق والصور • اختر المزوّد من الأعلى',
 
-        // رسائل وأخطاء
         firebaseInitFail: 'فشل تهيئة Firebase: ',
         dbConnectionError: 'خطأ في الاتصال بقاعدة البيانات. الرجاء المحاولة لاحقًا.',
         requestAlreadyPending: 'طلب دخول لهذا المستخدم قيد الانتظار بالفعل.',
@@ -438,7 +509,6 @@
         apiRetryFailed: 'حدث خطأ بعد عدة محاولات للاتصال بالـ API. يرجى التحقق من مفتاح API الخاص بك واتصال الشبكة. ',
         apiBlocked: 'تم حظر الاستجابة لأسباب تتعلق بالسلامة: ',
 
-        // Prompts
         highConvictionSystemPrompt: 'بصفتك "JO AI"، أنت خبير أسواق مالية عالمي لا يُعلى عليه... أسلوب تداولك الحالي هو "${tradingStyle}".',
         highConvictionUserQueryPrefix: 'قدم تحليلًا وتوصية تداول ذات قناعة لا تتزعزع لـ "',
         highConvictionUserQuerySuffix: '". استند إلى أعمق مستويات التحليل الفني والأساسي... قدم هذه المعلومات بتنسيق منظم للغاية...',
@@ -446,8 +516,26 @@
         imageReferenceSuffixSingle: 'استخدم الصورة المرفقة كمرجع إضافي لتحليلك.',
         imageReferenceSuffixMultiple: 'استخدم الصور المرفقة كمرجع إضافي لتحليلك.',
 
-        // Chat system prompt
-        chatSystemPrompt: 'أنت "JO GPT"، مساعد تداول واستثمار فائق التطور. تحدث العربية بطلاقة وبأسلوب احترافي وواثق. قدّم إجابات ذكية موجزة وعميقة، مدعومة بمنطق متماسك ومُلائمة للسياق. التزم بالقواعد: لا وعود، لا نصائح مالية ملزمة، اذكر المخاطر عند الضرورة. نمط التداول الحالي هو "${tradingStyle}" والمنهج الفني المفضّل هو "${school}".'
+        chatSystemPrompt: 'أنت "JO GPT"، مساعد تداول واستثمار فائق التطور. تحدث العربية بطلاقة وبأسلوب احترافي وواثق. قدّم إجابات ذكية موجزة وعميقة، مدعومة بمنطق متماسك ومُلائمة للسياق. التزم بالقواعد: لا وعود، لا نصائح مالية ملزمة، اذكر المخاطر عند الضرورة. نمط التداول الحالي هو "${tradingStyle}" والمنهج الفني المفضّل هو "${school}".',
+
+        // الأداء الجديد
+        performanceLabel: 'الأداء',
+        fastModeLabel: 'تسريع الاستجابة',
+        highLoadLabel: 'تحمّل الضغط العالي',
+        performanceHint: 'يقوم هذا بتحسين زمن الاستجابة، إدارة الطوابير، والـFallback التلقائي عند الضغط.',
+        latencyLabel: 'الزمن',
+        avgLatencyLabel: 'المتوسط',
+        analysisQueueLabel: 'طابور التحليل',
+        chatQueueLabel: 'طابور الشات',
+        cancelAnalysis: 'إلغاء التحليل',
+        cancelChat: 'إلغاء الشات',
+        warmingUp: 'تهيئة...',
+        warmed: 'تم التهيئة',
+        requestAborted: 'تم إلغاء الطلب',
+        fallbackUsed: 'تم استخدام مزوّد بديل بسبب الضغط',
+        strategyTitle: 'الاستراتيجية',
+        inputSectionTitle: 'الإدخال والصور',
+        actionsTitle: 'الأوامر السريعة'
       },
       'en': {
         pageTitle: 'JO AI',
@@ -512,7 +600,6 @@
         buyKeyword: 'Buy',
         sellKeyword: 'Sell',
 
-        // Chat
         chatTitle: 'Advanced GPT Chat',
         chatPlaceholder: 'Type your message...',
         sendButton: 'Send',
@@ -520,7 +607,6 @@
         uploadImageChatBtn: 'Attach Images',
         chatHint: 'Context + images supported • Choose provider above',
 
-        // Errors
         firebaseInitFail: 'Firebase initialization failed: ',
         dbConnectionError: 'Database connection error. Please try again later.',
         requestAlreadyPending: 'A login request for this username is already pending.',
@@ -554,7 +640,25 @@
         imageReferenceSuffixSingle: 'Use the attached image as an additional reference for your analysis.',
         imageReferenceSuffixMultiple: 'Use the attached images as an additional reference for your analysis.',
 
-        chatSystemPrompt: 'You are "JO GPT", an ultra-advanced trading/investment assistant. Respond in a professional, confident tone. Provide concise, deep, and context-aware answers with coherent reasoning. No guarantees, no binding financial advice; mention risks when relevant. Current trading style: "${tradingStyle}", preferred technical school: "${school}".'
+        chatSystemPrompt: 'You are "JO GPT", an ultra-advanced trading/investment assistant. Respond in a professional, confident tone. Provide concise, deep, and context-aware answers with coherent reasoning. No guarantees, no binding financial advice; mention risks when relevant. Current trading style: "${tradingStyle}", preferred technical school: "${school}".',
+
+        performanceLabel: 'Performance',
+        fastModeLabel: 'Fast Mode',
+        highLoadLabel: 'High-load Resilience',
+        performanceHint: 'Optimizes latency, manages queues, and auto-fallback under load.',
+        latencyLabel: 'Latency',
+        avgLatencyLabel: 'Average',
+        analysisQueueLabel: 'Analysis Queue',
+        chatQueueLabel: 'Chat Queue',
+        cancelAnalysis: 'Cancel Analysis',
+        cancelChat: 'Cancel Chat',
+        warmingUp: 'Warming...',
+        warmed: 'Warmed up',
+        requestAborted: 'Request aborted',
+        fallbackUsed: 'Fallback provider used due to load',
+        strategyTitle: 'Strategy',
+        inputSectionTitle: 'Input & Images',
+        actionsTitle: 'Quick Actions'
       }
     };
 
@@ -604,6 +708,37 @@
       el.classList.remove('hidden');
     };
 
+    // Status UI
+    const setStatus = (statusText, colorClass = 'text-gray-300') => {
+      const el = document.getElementById('status-badge');
+      if (!el) return;
+      el.textContent = statusText;
+      el.className = `status-pill ${colorClass}`;
+    };
+    const updateLatency = (ms) => {
+      const latEl = document.getElementById('status-latency');
+      const avgEl = document.getElementById('status-avg-latency');
+      if (!latEl || !avgEl) return;
+      if (typeof ms === 'number') {
+        latencyHistory.push(ms);
+        if (latencyHistory.length > MAX_LATENCY_HISTORY) latencyHistory.shift();
+        const avg = Math.round(latencyHistory.reduce((a,b)=>a+b,0)/latencyHistory.length);
+        latEl.textContent = `${Math.round(ms)} ms`;
+        avgEl.textContent = `${avg} ms`;
+      }
+    };
+    const setQueues = ({analysis=0, chat=0}) => {
+      const an = document.getElementById('status-queue-analysis');
+      const ch = document.getElementById('status-queue-chat');
+      if (an) an.textContent = analysis;
+      if (ch) ch.textContent = chat;
+    };
+    const setWarmup = (textKey) => {
+      const w = document.getElementById('status-warmup');
+      if (!w) return;
+      w.textContent = translations[currentLanguage][textKey] || '';
+    };
+
     // Auth state
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -631,10 +766,8 @@
         }
       });
 
-      // Document title
       if (translations[lang]?.pageTitle) document.title = translations[lang].pageTitle;
 
-      // Update select options
       document.querySelectorAll('#trading-style-select option').forEach(option => {
         const key = option.getAttribute('data-lang-key');
         if (translations[lang]?.[key]) option.textContent = translations[lang][key];
@@ -651,7 +784,6 @@
       const userIdDisplay = document.getElementById('user-id-display');
       if (userIdDisplay) userIdDisplay.textContent = `${translations[currentLanguage]['idPrefix']}${userId || ''}`;
 
-      // Update admin button labels
       document.querySelectorAll('.approve-btn').forEach(btn => btn.textContent = translations[currentLanguage]['approveButton']);
       document.querySelectorAll('.deny-btn').forEach(btn => btn.textContent = translations[currentLanguage]['denyButton']);
       document.querySelectorAll('.delete-user-btn').forEach(btn => btn.textContent = translations[currentLanguage]['deleteButton']);
@@ -671,117 +803,253 @@
       }
     };
 
+    // ====== High-load utilities ======
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+    // Rate Limiter (token bucket)
+    class RateLimiter {
+      constructor(capacity, refillPerSec) {
+        this.capacity = capacity;
+        this.tokens = capacity;
+        setInterval(() => {
+          this.tokens = Math.min(this.capacity, this.tokens + refillPerSec);
+        }, 1000);
+      }
+      async acquire() {
+        while (this.tokens < 1) { await sleep(200); }
+        this.tokens -= 1;
+        return true;
+      }
+    }
+    const geminiLimiter = new RateLimiter(5, 2); // up to ~5 tokens, +2/sec
+    const openaiLimiter = new RateLimiter(5, 2);
+
+    // Request Queue
+    class RequestQueue {
+      constructor(concurrency = 1) {
+        this.queue = [];
+        this.active = 0;
+        this.concurrency = concurrency;
+        this.onChange = null;
+      }
+      setOnChange(fn) { this.onChange = fn; }
+      _update() { if (this.onChange) this.onChange(this.queue.length); }
+      enqueue(task) {
+        return new Promise((resolve, reject) => {
+          this.queue.push({ task, resolve, reject });
+          this._update();
+          this._dequeue();
+        });
+      }
+      async _dequeue() {
+        if (this.active >= this.concurrency || this.queue.length === 0) return;
+        const item = this.queue.shift();
+        this._update();
+        this.active++;
+        try {
+          const res = await item.task();
+          item.resolve(res);
+        } catch (e) {
+          item.reject(e);
+        } finally {
+          this.active--;
+          this._dequeue();
+          this._update();
+        }
+      }
+    }
+    const analysisQueue = new RequestQueue(1);
+    const chatQueue = new RequestQueue(1);
+
+    // Track queue in UI
+    analysisQueue.setOnChange(count => setQueues({ analysis: count, chat: parseInt(document.getElementById('status-queue-chat')?.textContent || '0') }));
+    chatQueue.setOnChange(count => setQueues({ chat: count, analysis: parseInt(document.getElementById('status-queue-analysis')?.textContent || '0') }));
+
+    // Fetch with timeout + external abort
+    const fetchWithTimeout = async (url, options = {}, timeoutMs = 60000, externalSignal) => {
+      const controller = new AbortController();
+      const onAbort = () => controller.abort('external abort');
+      if (externalSignal) externalSignal.addEventListener('abort', onAbort, { once: true });
+      const id = setTimeout(() => controller.abort('timeout'), timeoutMs);
+      try {
+        const resp = await fetch(url, { ...options, signal: controller.signal });
+        return resp;
+      } finally {
+        clearTimeout(id);
+        if (externalSignal) externalSignal.removeEventListener('abort', onAbort);
+      }
+    };
+
     // ===== Providers: Gemini + OpenAI =====
-    // Gemini single-turn (analysis)
-    const getGeminiResponse = async (systemPrompt, userQuery, apiKey, imagesBase64 = []) => {
+    const getGeminiResponse = async (systemPrompt, userQuery, apiKey, imagesBase64 = [], abortSignal, timeoutMs = 60000) => {
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
       const headers = { 'Content-Type': 'application/json' };
-
       const parts = [];
-      if (imagesBase64?.length) {
-        imagesBase64.forEach(b64 => parts.push({ inlineData: { mimeType: 'image/jpeg', data: b64 } }));
-      }
+      if (imagesBase64?.length) imagesBase64.forEach(b64 => parts.push({ inlineData: { mimeType: 'image/jpeg', data: b64 } }));
       parts.push({ text: userQuery });
-
       const payload = { contents: [{ parts }], systemInstruction: { parts: [{ text: systemPrompt }] } };
 
       for (let i = 0; i < MAX_RETRIES; i++) {
         try {
-          const resp = await fetch(apiUrl, { method: 'POST', headers, body: JSON.stringify(payload) });
+          if (highLoadEnabled) await geminiLimiter.acquire();
+          const resp = await fetchWithTimeout(apiUrl, { method: 'POST', headers, body: JSON.stringify(payload) }, timeoutMs, abortSignal);
           if (!resp.ok) {
-            let errText = await resp.text().catch(()=>null);
-            try { const errorBody = JSON.parse(errText || '{}'); throw new Error(`API Error: ${resp.status} ${resp.statusText} - ${JSON.stringify(errorBody)}`); }
-            catch (e) { throw new Error(`API Error: ${resp.status} ${resp.statusText} - ${errText}`); }
+            const errText = await resp.text().catch(()=>null);
+            throw new Error(`API Error: ${resp.status} ${resp.statusText} - ${errText}`);
           }
           const result = await resp.json();
           if (result.candidates?.[0]?.content?.parts?.[0]?.text) return result.candidates[0].content.parts[0].text;
           const blockReason = result.candidates?.[0]?.finishReason;
           return `${translations[currentLanguage]['apiBlocked']}${blockReason || 'unknown'}.`;
         } catch (error) {
-          console.error(`Attempt ${i + 1} failed:`, error);
+          if (error?.name === 'AbortError') throw error;
+          console.error(`Attempt ${i + 1} failed (Gemini):`, error);
           if (i === MAX_RETRIES - 1) return `${translations[currentLanguage]['apiRetryFailed']}(${error.message})`;
-          await new Promise(r => setTimeout(r, 2 ** i * 1000));
+          await sleep(2 ** i * 400);
         }
       }
     };
 
-    // Gemini multi-turn (chat)
-    const getGeminiChatResponse = async (systemPrompt, history, apiKey) => {
+    const getGeminiChatResponse = async (systemPrompt, history, apiKey, abortSignal, timeoutMs = 60000) => {
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
       const headers = { 'Content-Type': 'application/json' };
-
-      // Convert history -> contents
       const contents = history.map(msg => {
         const role = msg.role === 'assistant' ? 'model' : 'user';
         const parts = [];
-        if (msg.imagesBase64?.length) {
-          msg.imagesBase64.forEach(b64 => parts.push({ inlineData: { mimeType: 'image/jpeg', data: b64 } }));
-        }
+        if (msg.imagesBase64?.length) msg.imagesBase64.forEach(b64 => parts.push({ inlineData: { mimeType: 'image/jpeg', data: b64 } }));
         parts.push({ text: msg.text });
         return { role, parts };
       });
-
       const payload = { contents, systemInstruction: { parts: [{ text: systemPrompt }] } };
 
       for (let i = 0; i < MAX_RETRIES; i++) {
         try {
-          const resp = await fetch(apiUrl, { method: 'POST', headers, body: JSON.stringify(payload) });
+          if (highLoadEnabled) await geminiLimiter.acquire();
+          const resp = await fetchWithTimeout(apiUrl, { method: 'POST', headers, body: JSON.stringify(payload) }, timeoutMs, abortSignal);
           if (!resp.ok) {
-            let errText = await resp.text().catch(()=>null);
-            try { const errorBody = JSON.parse(errText || '{}'); throw new Error(`API Error: ${resp.status} ${resp.statusText} - ${JSON.stringify(errorBody)}`); }
-            catch (e) { throw new Error(`API Error: ${resp.status} ${resp.statusText} - ${errText}`); }
+            const errText = await resp.text().catch(()=>null);
+            throw new Error(`API Error: ${resp.status} ${resp.statusText} - ${errText}`);
           }
           const result = await resp.json();
           if (result.candidates?.[0]?.content?.parts?.[0]?.text) return result.candidates[0].content.parts[0].text;
           const blockReason = result.candidates?.[0]?.finishReason;
           return `${translations[currentLanguage]['apiBlocked']}${blockReason || 'unknown'}.`;
         } catch (error) {
+          if (error?.name === 'AbortError') throw error;
           console.error(`Attempt ${i + 1} failed (Gemini Chat):`, error);
           if (i === MAX_RETRIES - 1) return `${translations[currentLanguage]['apiRetryFailed']}(${error.message})`;
-          await new Promise(r => setTimeout(r, 2 ** i * 1000));
+          await sleep(2 ** i * 400);
         }
       }
     };
 
-    // OpenAI chat (analysis + chat)
-    const getOpenAIChatResponse = async (systemPrompt, messages, openaiKey, model = 'gpt-4o-mini') => {
+    const getOpenAIChatResponse = async (systemPrompt, messages, openaiKey, abortSignal, timeoutMs = 60000, model = 'gpt-4o-mini') => {
       const url = 'https://api.openai.com/v1/chat/completions';
       const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${openaiKey}` };
       const payload = { model, messages, temperature: 0.3 };
 
       for (let i = 0; i < MAX_RETRIES; i++) {
         try {
-          const resp = await fetch(url, { method: 'POST', headers, body: JSON.stringify(payload) });
+          if (highLoadEnabled) await openaiLimiter.acquire();
+          const resp = await fetchWithTimeout(url, { method: 'POST', headers, body: JSON.stringify(payload) }, timeoutMs, abortSignal);
           if (!resp.ok) {
-            let errText = await resp.text().catch(()=>null);
-            try { const errorBody = JSON.parse(errText || '{}'); throw new Error(`OpenAI Error: ${resp.status} ${resp.statusText} - ${JSON.stringify(errorBody)}`); }
-            catch (e) { throw new Error(`OpenAI Error: ${resp.status} ${resp.statusText} - ${errText}`); }
+            const errText = await resp.text().catch(()=>null);
+            throw new Error(`OpenAI Error: ${resp.status} ${resp.statusText} - ${errText}`);
           }
           const data = await resp.json();
           return data.choices?.[0]?.message?.content || '';
         } catch (error) {
+          if (error?.name === 'AbortError') throw error;
           console.error(`Attempt ${i + 1} failed (OpenAI):`, error);
           if (i === MAX_RETRIES - 1) return `${translations[currentLanguage]['apiRetryFailed']}(${error.message})`;
-          await new Promise(r => setTimeout(r, 2 ** i * 1000));
+          await sleep(2 ** i * 400);
         }
       }
     };
 
-    // Unified provider for analysis
-    const getProviderUnifiedResponse = async ({ provider, systemPrompt, userQuery, geminiKey, openaiKey, imagesBase64 }) => {
+    // Unified single-turn (analysis)
+    const getProviderUnifiedResponse = async ({ provider, systemPrompt, userQuery, geminiKey, openaiKey, imagesBase64, abortSignal, timeoutMs }) => {
       if (provider === 'openai') {
         const content = [{ type: 'text', text: userQuery }];
-        if (imagesBase64?.length) {
-          imagesBase64.forEach(b64 => content.push({ type: 'image_url', image_url: { url: `data:image/jpeg;base64,${b64}` } }));
-        }
+        if (imagesBase64?.length) imagesBase64.forEach(b64 => content.push({ type: 'image_url', image_url: { url: `data:image/jpeg;base64,${b64}` } }));
         const messages = [{ role: 'system', content: systemPrompt }, { role: 'user', content }];
-        return await getOpenAIChatResponse(systemPrompt, messages, openaiKey);
+        return await getOpenAIChatResponse(systemPrompt, messages, openaiKey, abortSignal, timeoutMs);
       } else {
-        return await getGeminiResponse(systemPrompt, userQuery, geminiKey, imagesBase64);
+        return await getGeminiResponse(systemPrompt, userQuery, geminiKey, imagesBase64, abortSignal, timeoutMs);
       }
     };
 
-    // ===== Login/Requests/Admin (unchanged except for language hooks) =====
+    // Fallback logic
+    const shouldFallback = (txt='') => {
+      const s = (txt || '').toLowerCase();
+      return s.includes('429') || s.includes('rate limit') || s.includes('quota') || s.includes('5xx') || s.includes('api error');
+    };
+    const callUnifiedWithFallback = async (args) => {
+      const t0 = performance.now();
+      let res = await getProviderUnifiedResponse(args);
+      let fellback = false;
+      if (highLoadEnabled && shouldFallback(res)) {
+        // Switch provider if other key exists
+        if (args.provider === 'gemini' && args.openaiKey) {
+          const alt = { ...args, provider: 'openai' };
+          res = `${translations[currentLanguage]['fallbackUsed']}: OpenAI\n\n` + (await getProviderUnifiedResponse(alt));
+          fellback = true;
+        } else if (args.provider === 'openai' && args.geminiKey) {
+          const alt = { ...args, provider: 'gemini' };
+          res = `${translations[currentLanguage]['fallbackUsed']}: Gemini\n\n` + (await getProviderUnifiedResponse(alt));
+          fellback = true;
+        }
+      }
+      const t1 = performance.now();
+      updateLatency(t1 - t0);
+      setStatus('Done', 'text-green-300');
+      return res;
+    };
+
+    // Chat fallback
+    const callChatWithFallback = async ({ provider, systemPrompt, history, geminiKey, openaiKey, abortSignal, timeoutMs }) => {
+      const t0 = performance.now();
+      let res;
+      if (provider === 'openai') {
+        const messages = [{ role: 'system', content: systemPrompt }];
+        for (const msg of history) {
+          if (msg.role === 'assistant') messages.push({ role: 'assistant', content: msg.text });
+          else {
+            if (msg.imagesBase64?.length) {
+              const content = [{ type: 'text', text: msg.text }];
+              msg.imagesBase64.forEach(b64 => content.push({ type: 'image_url', image_url: { url: `data:image/jpeg;base64,${b64}` }}));
+              messages.push({ role: 'user', content });
+            } else messages.push({ role: 'user', content: msg.text });
+          }
+        }
+        res = await getOpenAIChatResponse(systemPrompt, messages, openaiKey, abortSignal, timeoutMs);
+        if (highLoadEnabled && shouldFallback(res) && geminiKey) {
+          res = `${translations[currentLanguage]['fallbackUsed']}: Gemini\n\n` + await getGeminiChatResponse(systemPrompt, history, geminiKey, abortSignal, timeoutMs);
+        }
+      } else {
+        res = await getGeminiChatResponse(systemPrompt, history, geminiKey, abortSignal, timeoutMs);
+        if (highLoadEnabled && shouldFallback(res) && openaiKey) {
+          const messages = [{ role: 'system', content: systemPrompt }];
+          for (const msg of history) {
+            if (msg.role === 'assistant') messages.push({ role: 'assistant', content: msg.text });
+            else {
+              if (msg.imagesBase64?.length) {
+                const content = [{ type: 'text', text: msg.text }];
+                msg.imagesBase64.forEach(b64 => content.push({ type: 'image_url', image_url: { url: `data:image/jpeg;base64,${b64}` }}));
+                messages.push({ role: 'user', content });
+              } else messages.push({ role: 'user', content: msg.text });
+            }
+          }
+          res = `${translations[currentLanguage]['fallbackUsed']}: OpenAI\n\n` + await getOpenAIChatResponse(systemPrompt, messages, openaiKey, abortSignal, timeoutMs);
+        }
+      }
+      const t1 = performance.now();
+      updateLatency(t1 - t0);
+      setStatus('Done', 'text-green-300');
+      return res;
+    };
+
+    // ===== Login/Requests/Admin (كما هي مع ربط اللغة) =====
     const submitLoginRequest = async (username) => {
       if (!db) { showMessageModal(translations[currentLanguage]['dbConnectionError']); return; }
       try {
@@ -955,7 +1223,7 @@
         const el = document.createElement('div');
         el.className = 'relative';
         el.innerHTML = `
-          <img src="${URL.createObjectURL(imageData.file)}" alt="Preview ${index + 1}" class="image-preview-thumbnail">
+          <img src="${URL.createObjectURL(imageData.file)}" alt="Preview ${index + 1}" class="image-preview-thumbnail" loading="lazy">
           <button data-index="${index}" class="remove-image-btn" title="Remove image">&times;</button>
         `;
         wrapper.appendChild(el);
@@ -978,7 +1246,7 @@
         const el = document.createElement('div');
         el.className = 'relative';
         el.innerHTML = `
-          <img src="${URL.createObjectURL(imageData.file)}" alt="Chat Preview ${index+1}" class="chat-image-thumb">
+          <img src="${URL.createObjectURL(imageData.file)}" alt="Chat Preview ${index+1}" class="chat-image-thumb" loading="lazy">
           <button data-index="${index}" class="remove-image-btn" title="Remove image">&times;</button>
         `;
         wrapper.appendChild(el);
@@ -1010,7 +1278,7 @@
         document.getElementById('lang-ar').classList.replace('bg-blue-600', 'bg-gray-600');
       }
 
-      // Show welcome
+      // Welcome -> default visibilities
       welcomeScreen.classList.remove('hidden');
       loginFormContainer.classList.add('hidden');
       document.getElementById('waiting-screen').classList.add('hidden');
@@ -1090,7 +1358,31 @@
         openaiNote?.classList.toggle('hidden', !isOpenAI);
       };
       setOpenAIVisibility();
-      providerSelect.addEventListener('change', setOpenAIVisibility);
+      providerSelect.addEventListener('change', () => {
+        setOpenAIVisibility();
+        if (fastModeEnabled) warmUpSelectedProvider();
+      });
+
+      // Fast/Highload toggles
+      const fastToggle = document.getElementById('fast-mode-toggle');
+      const highloadToggle = document.getElementById('highload-mode-toggle');
+      fastToggle.checked = fastModeEnabled;
+      highloadToggle.checked = highLoadEnabled;
+      fastToggle.addEventListener('change', () => {
+        fastModeEnabled = fastToggle.checked;
+        localStorage.setItem('fastModeEnabled', JSON.stringify(fastModeEnabled));
+        if (fastModeEnabled) warmUpSelectedProvider();
+        else setWarmup('');
+      });
+      highloadToggle.addEventListener('change', () => {
+        highLoadEnabled = highloadToggle.checked;
+        localStorage.setItem('highLoadEnabled', JSON.stringify(highLoadEnabled));
+      });
+
+      // Warm up when keys provided (fast mode)
+      const geminiKeyInput = document.getElementById('api-key-input');
+      geminiKeyInput.addEventListener('blur', () => fastModeEnabled && warmUpSelectedProvider());
+      openaiKeyInput.addEventListener('blur', () => fastModeEnabled && warmUpSelectedProvider());
 
       // Analysis buttons
       document.getElementById('analyze-btn').addEventListener('click', () => handleAnalysis('technical'));
@@ -1108,6 +1400,14 @@
       });
       document.getElementById('close-modal-btn').addEventListener('click', () => {
         document.getElementById('message-modal').classList.add('hidden');
+      });
+
+      // Cancel buttons
+      document.getElementById('cancel-analysis-btn').addEventListener('click', () => {
+        if (analysisAbortController) { analysisAbortController.abort('user'); showMessageModal(translations[currentLanguage]['requestAborted']); setStatus('Idle', 'text-gray-300'); }
+      });
+      document.getElementById('cancel-chat-btn').addEventListener('click', () => {
+        if (chatAbortController) { chatAbortController.abort('user'); showMessageModal(translations[currentLanguage]['requestAborted']); setStatus('Idle', 'text-gray-300'); }
       });
 
       // Analysis image upload
@@ -1158,6 +1458,28 @@
       document.getElementById('chat-send-btn').addEventListener('click', handleChatSend);
     });
 
+    // ===== Warm-up (Fast Mode) =====
+    const warmUpSelectedProvider = async () => {
+      const provider = document.getElementById('provider-select').value;
+      const geminiKey = document.getElementById('api-key-input').value.trim();
+      const openaiKey = document.getElementById('openai-api-key-input').value.trim();
+      if (!fastModeEnabled) return;
+      try {
+        setWarmup('warmingUp');
+        if (provider === 'gemini' && geminiKey) {
+          // quick warm-up
+          await getGeminiResponse('warm-up', 'ping', geminiKey, [], undefined, 8000);
+        } else if (provider === 'openai' && openaiKey) {
+          const messages = [{ role: 'system', content: 'warm-up'}, { role: 'user', content: 'ping'}];
+          await getOpenAIChatResponse('warm-up', messages, openaiKey, undefined, 8000);
+        }
+        setWarmup('warmed');
+      } catch (e) {
+        console.debug('Warm-up skipped:', e?.message);
+        setWarmup('');
+      }
+    };
+
     // ===== Analysis handler =====
     const handleAnalysis = async (analysisType) => {
       const provider = document.getElementById('provider-select').value;
@@ -1174,14 +1496,19 @@
       if (provider === 'gemini' && !geminiKey) { showMessageModal(translations[currentLanguage]['apiKeyRequired']); return; }
       if (!queryText && currentImagesData.length === 0) { showMessageModal(translations[currentLanguage]['queryOrImageRequired']); return; }
 
+      // Abort previous
+      if (analysisAbortController) analysisAbortController.abort('new request');
+      analysisAbortController = new AbortController();
+
       loadingSpinner.classList.remove('hidden');
       outputText.innerHTML = '';
+      setStatus('Processing...', 'text-yellow-300');
       mainAppContainer.classList.remove('bg-green-trade', 'bg-red-trade');
       mainAppContainer.classList.add('bg-default');
 
+      // Build prompts
       let systemPrompt = '';
       let fullQuery = '';
-
       if (analysisType === 'high-conviction') {
         systemPrompt = translations[currentLanguage]['highConvictionSystemPrompt']
                         .replace('${tradingStyle}', tradingStyle)
@@ -1236,25 +1563,37 @@
       }
 
       const imagesBase64 = currentImagesData.map(d => d.base64);
-      const result = await getProviderUnifiedResponse({
-        provider: provider,
-        systemPrompt: systemPrompt,
-        userQuery: fullQuery,
-        geminiKey: geminiKey,
-        openaiKey: openaiKey,
-        imagesBase64
-      });
+      const task = async () => {
+        try {
+          const result = await callUnifiedWithFallback({
+            provider,
+            systemPrompt,
+            userQuery: fullQuery,
+            geminiKey,
+            openaiKey,
+            imagesBase64,
+            abortSignal: analysisAbortController.signal,
+            timeoutMs: 60000
+          });
+          document.getElementById('output-text').innerHTML = formatMarkdown(result);
+          if (result.includes(translations[currentLanguage]['buyKeyword'])) {
+            mainAppContainer.classList.remove('bg-default'); mainAppContainer.classList.add('bg-green-trade');
+          } else if (result.includes(translations[currentLanguage]['sellKeyword'])) {
+            mainAppContainer.classList.remove('bg-default'); mainAppContainer.classList.add('bg-red-trade');
+          } else {
+            mainAppContainer.classList.remove('bg-green-trade', 'bg-red-trade'); mainAppContainer.classList.add('bg-default');
+          }
+        } catch (e) {
+          if (e?.name === 'AbortError') showMessageModal(translations[currentLanguage]['requestAborted']);
+          else showMessageModal((e && e.message) || 'Error');
+        } finally {
+          document.getElementById('loading-spinner').classList.add('hidden');
+          setStatus('Idle', 'text-gray-300');
+        }
+      };
 
-      loadingSpinner.classList.add('hidden');
-      document.getElementById('output-text').innerHTML = formatMarkdown(result);
-
-      if (result.includes(translations[currentLanguage]['buyKeyword'])) {
-        mainAppContainer.classList.remove('bg-default'); mainAppContainer.classList.add('bg-green-trade');
-      } else if (result.includes(translations[currentLanguage]['sellKeyword'])) {
-        mainAppContainer.classList.remove('bg-default'); mainAppContainer.classList.add('bg-red-trade');
-      } else {
-        mainAppContainer.classList.remove('bg-green-trade', 'bg-red-trade'); mainAppContainer.classList.add('bg-default');
-      }
+      // Enqueue
+      analysisQueue.enqueue(task);
     };
 
     // ===== Chat logic =====
@@ -1270,7 +1609,6 @@
         bubble.className = `chat-bubble ${msg.role === 'user' ? 'chat-bubble-user' : 'chat-bubble-assistant'}`;
         bubble.innerHTML = formatMarkdown(msg.text || '');
         row.appendChild(bubble);
-        // show thumbs if exist
         if (msg.imagesBase64?.length) {
           const thumbs = document.createElement('div');
           thumbs.className = 'mt-2 flex gap-2';
@@ -1278,6 +1616,7 @@
             const img = document.createElement('img');
             img.src = `data:image/jpeg;base64,${b64}`;
             img.className = 'chat-image-thumb';
+            img.loading = 'lazy';
             thumbs.appendChild(img);
           });
           row.appendChild(thumbs);
@@ -1301,6 +1640,10 @@
       if (provider === 'openai' && !openaiKey) { showMessageModal(translations[currentLanguage]['openaiApiKeyRequired']); return; }
       if (provider === 'gemini' && !geminiKey) { showMessageModal(translations[currentLanguage]['apiKeyRequired']); return; }
 
+      // Abort previous chat if any
+      if (chatAbortController) chatAbortController.abort('new chat');
+      chatAbortController = new AbortController();
+
       const systemPrompt = translations[currentLanguage]['chatSystemPrompt']
                             .replace('${tradingStyle}', tradingStyle)
                             .replace('${school}', school);
@@ -1310,44 +1653,34 @@
       chatHistory.push({ role: 'user', text, imagesBase64 });
       renderChatMessages();
 
-      // Clear input and previews
       chatInput.value = '';
       currentChatImagesData.length = 0;
       renderChatImagePreviews();
 
       chatLoading.classList.remove('hidden');
+      setStatus('Processing...', 'text-yellow-300');
 
-      let assistantReply = '';
-      if (provider === 'openai') {
-        // Build OpenAI messages with multimodal last turn
-        const messages = [{ role: 'system', content: systemPrompt }];
-        for (const msg of chatHistory) {
-          if (msg.role === 'assistant') {
-            messages.push({ role: 'assistant', content: msg.text });
-          } else {
-            if (msg.imagesBase64?.length) {
-              const content = [{ type: 'text', text: msg.text }];
-              msg.imagesBase64.forEach(b64 => content.push({ type: 'image_url', image_url: { url: `data:image/jpeg;base64,${b64}` }}));
-              messages.push({ role: 'user', content });
-            } else {
-              messages.push({ role: 'user', content: msg.text });
-            }
-          }
+      const task = async () => {
+        try {
+          const assistantReply = await callChatWithFallback({
+            provider, systemPrompt, history: chatHistory, geminiKey, openaiKey, abortSignal: chatAbortController.signal, timeoutMs: 60000
+          });
+          chatHistory.push({ role: 'assistant', text: assistantReply });
+          renderChatMessages();
+        } catch (e) {
+          if (e?.name === 'AbortError') showMessageModal(translations[currentLanguage]['requestAborted']);
+          else showMessageModal((e && e.message) || 'Error');
+        } finally {
+          chatLoading.classList.add('hidden');
+          setStatus('Idle', 'text-gray-300');
         }
-        assistantReply = await getOpenAIChatResponse(systemPrompt, messages, openaiKey);
-      } else {
-        // Gemini multi-turn
-        assistantReply = await getGeminiChatResponse(systemPrompt, chatHistory, geminiKey);
-      }
+      };
 
-      chatLoading.classList.add('hidden');
-      chatHistory.push({ role: 'assistant', text: assistantReply });
-      renderChatMessages();
+      chatQueue.enqueue(task);
     };
 
-    // ===== Expose some to window if needed (debug) =====
+    // Expose for debug
     window._JOAI = { chatHistory };
-
   </script>
-</body>
+  </body>
 </html>
