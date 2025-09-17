@@ -48,8 +48,14 @@
       transform: translate(-50%, -50%) scale(0);
     }
     .button-style:hover::before { transform: translate(-50%, -50%) scale(1); }
-    .glowing-shadow-green { box-shadow: 0 0 15px rgba(74, 222, 128, 0.2), 0 0 30px rgba(74, 222, 128, 0.1), 0 0 45px rgba(74, 222, 128, 0.05); }
+    .glowing-shadow-green { box-shadow: 0 0 15px rgba(74, 222, 128, 0.2), 0 0 30px rgba(74, 222, 128, 0.1), 0 0 60px rgba(74, 222, 128, 0.05); }
     .glowing-shadow-green:hover { box-shadow: 0 0 20px rgba(74, 222, 128, 0.4), 0 0 40px rgba(74, 222, 128, 0.2), 0 0 60px rgba(74, 222, 128, 0.1); }
+
+    /* Brand buttons */
+    .brand-ig { border: 1px solid #E1306C66; background: linear-gradient(135deg, #281427 0%, #1b1324 100%); }
+    .brand-ig:hover { border-color: #E1306C; box-shadow: 0 6px 20px #E1306C33; }
+    .brand-wa { border: 1px solid #25D36666; background: linear-gradient(135deg, #0f2a1f 0%, #0c2018 100%); }
+    .brand-wa:hover { border-color: #25D366; box-shadow: 0 6px 20px #25D36633; }
 
     /* Background themes */
     .bg-default {
@@ -87,7 +93,11 @@
     .loading-animation { border-top-color: #4ade80; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Grid layout: left controls, right output/chat */
+    /* AI Power badge */
+    .ai-badge { border: 1px solid rgba(168,85,247,0.35); background: linear-gradient(135deg,#1b1430 0%,#141126 100%); box-shadow: 0 0 12px rgba(168,85,247,0.15); }
+    .ai-badge-strong { border-color: rgba(168,85,247,0.6); box-shadow: 0 0 18px rgba(168,85,247,0.25); }
+
+    /* Grid layout */
     .app-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
     @media (min-width: 1024px) { .app-grid { grid-template-columns: 1fr 1.4fr; gap: 1.25rem; } }
   </style>
@@ -98,11 +108,26 @@
     <button id="lang-ar" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-semibold text-sm transition-colors duration-200">العربية</button>
     <button id="lang-en" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md font-semibold text-sm transition-colors duration-200">English</button>
   </div>
-    <!-- الشاشة الترحيبية -->
+
+  <!-- الشاشة الترحيبية -->
   <div id="welcome-screen" class="min-h-screen w-full flex flex-col items-center justify-center p-4 text-white bg-gradient-to-br from-[#0c1521] to-[#1a2033] via-[#10192a]">
     <div class="container max-w-4xl p-8 rounded-3xl glowing-shadow text-center md:text-right relative overflow-hidden">
       <div class="relative z-10">
         <h1 class="text-4xl lg:text-5xl font-extrabold mb-8 text-green-400">JO AI <span class="text-gray-200" data-lang-key="featuresTitle">Features</span></h1>
+
+        <!-- AI Power Feature card (ميزة وليست زر) -->
+        <div class="ai-badge ai-badge-strong mb-6 rounded-2xl p-4 text-right">
+          <div class="flex items-center gap-3">
+            <span class="text-purple-400 text-2xl">⚡</span>
+            <div>
+              <p class="text-lg font-bold text-purple-300" data-lang-key="aiPowerTitle">قوة الذكاء الاصطناعي: Ultra AI (ميزة)</p>
+              <p class="text-sm text-gray-300 mt-1" data-lang-key="aiPowerDesc">وضع فائق يجمع تلقائيًا بين Gemini وOpenAI ويطبّق تنقيحًا ذاتيًا قبل الإخراج، لتحسين الدقة والوضوح. مفعّل دائمًا — ليس زرًا.</p>
+            </div>
+          </div>
+          <p class="text-xs text-gray-400 mt-3" data-lang-key="aiPowerHint">تنبيه: الأداء عالي لكن لا يوجد ضمانات للنتائج، وهذه ليست نصيحة مالية.</p>
+        </div>
+
+        <!-- قائمة الميزات -->
         <ul class="space-y-4 text-lg md:text-xl text-right">
           <li class="flex items-start md:items-center"><span class="text-yellow-400 text-2xl ml-3">🔍</span><span class="font-medium text-gray-300" data-lang-key="feature1">Live Market Insights – Tracks prices, market cap, FDV, and token holders.</span></li>
           <li class="flex items-start md:items-center"><span class="text-blue-400 text-2xl ml-3">📈</span><span class="font-medium text-gray-300" data-lang-key="feature2">Token Analytics – Analyzes supply, tokenomics, and unlock schedules.</span></li>
@@ -112,17 +137,41 @@
           <li class="flex items-start md:items-center"><span class="text-pink-400 text-2xl ml-3">🌐</span><span class="font-medium text-gray-300" data-lang-key="feature6">Community Tracking – Monitors Twitter, Telegram, and Discord engagement.</span></li>
           <li class="flex items-start md:items-center"><span class="text-red-400 text-2xl ml-3">🔒</span><span class="font-medium text-gray-300" data-lang-key="feature7">Security & Audit Reports – Highlights security scores and past audits.</span></li>
         </ul>
+
+        <!-- تواصل مع المسؤول (نُقل إلى شاشة الترحيب) -->
+        <div class="mt-10 border-t border-gray-700 pt-6">
+          <h2 class="text-xl font-bold text-green-400 mb-2" data-lang-key="contactAdminTitle">تواصل مع المسؤول</h2>
+          <p class="text-gray-300 text-sm mb-4" data-lang-key="contactAdminDesc">بحاجة لمساعدة أو موافقة أسرع؟ تواصل عبر:</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <a href="https://instagram.com/_sn8d" target="_blank" rel="noopener noreferrer" class="p-3 rounded-lg font-semibold flex items-center justify-center gap-2 brand-ig">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#E1306C" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2c1.66 0 3 1.34 3 3v10c0 1.66-1.34 3-3 3H7c-1.66 0-3-1.34-3-3V7c0-1.66 1.34-3 3-3h10zm-5 3.5A5.5 5.5 0 1 0 17.5 13 5.507 5.507 0 0 0 12 7.5zm0 2A3.5 3.5 0 1 1 8.5 13 3.5 3.5 0 0 1 12 9.5zM18 6.3a1 1 0 1 0 1 1 1.001 1.001 0 0 0-1-1z"/>
+              </svg>
+              <span data-lang-key="instagramLabel">إنستغرام</span>
+              <span class="text-gray-300" dir="ltr">_sn8d</span>
+            </a>
+
+            <a href="https://wa.me/962782643348" target="_blank" rel="noopener noreferrer" class="p-3 rounded-lg font-semibold flex items-center justify-center gap-2 brand-wa">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M20.52 3.48A11.77 11.77 0 0 0 12.01 0C5.4 0 .03 5.37.03 11.98c0 2.11.55 4.17 1.6 5.99L0 24l6.2-1.6a11.94 11.94 0 0 0 5.8 1.48h.01c6.61 0 11.98-5.37 11.98-11.98a11.94 11.94 0 0 0-3.47-8.42zM12 21.5h-.01a9.53 9.53 0 0 1-4.86-1.31l-.35-.2-3.68.95.98-3.58-.23-.37A9.5 9.5 0 1 1 21.5 12a9.48 9.48 0 0 1-9.49 9.5zm5.48-7.1c-.3-.15-1.76-.87-2.04-.97-.28-.1-.48-.15-.68.15-.2.3-.78.97-.95 1.18-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.74-1.64-2.04-.17-.3-.02-.47.13-.62.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.68-1.63-.93-2.23-.25-.6-.5-.5-.68-.5h-.58c-.2 0-.52.07-.8.37s-1.05 1.02-1.05 2.48 1.08 2.88 1.23 3.08c.15.2 2.14 3.27 5.18 4.58.72.31 1.28.5 1.72.64.72.23 1.38.2 1.9.12.58-.09 1.76-.72 2.01-1.42.25-.7.25-1.3.18-1.42-.07-.12-.27-.2-.57-.35z"/>
+              </svg>
+              <span data-lang-key="whatsappLabel">واتساب</span>
+              <span class="text-gray-300" dir="ltr">+962782643348</span>
+            </a>
+          </div>
+        </div>
+
         <button id="proceed-to-login-btn" class="button-style mt-12 px-8 py-4 text-xl rounded-full font-bold glowing-shadow-green" data-lang-key="loginButton">تسجيل الدخول</button>
       </div>
     </div>
   </div>
-
-  <!-- شاشة تسجيل الدخول -->
+    <!-- شاشة تسجيل الدخول -->
   <div id="login-form-container" class="hidden w-full max-w-sm">
     <div class="container p-8 rounded-3xl glowing-shadow">
       <div class="text-center mb-8">
         <h1 class="text-3xl font-bold text-white mb-2" data-lang-key="loginToJOUAI">تسجيل الدخول إلى JO AI</h1>
       </div>
+
       <form id="login-form" class="space-y-6">
         <div>
           <label for="username-input" class="block text-sm font-medium text-gray-300 mb-2" data-lang-key="usernameLabel">اسم المستخدم:</label>
@@ -154,11 +203,12 @@
       <p id="user-id-display" class="text-xs text-gray-500 mt-2" data-lang-key="idPrefix">المعرف: </p>
     </div>
 
-    <!-- شريط الحالة الجديد -->
+    <!-- شريط الحالة -->
     <div class="status-bar p-4 rounded-2xl mb-6 flex flex-col md:flex-row gap-4 items-start md:items-center">
       <div class="flex items-center gap-2">
         <span class="status-pill text-gray-300" id="status-badge">Idle</span>
         <span class="text-xs text-gray-400" id="status-warmup"></span>
+        <span id="ai-power-pill" class="status-pill text-purple-300 border-purple-500/40 bg-purple-900/20 ml-2">⚡ <span data-lang-key="aiUltra">Ultra AI</span> • <span data-lang-key="aiAlwaysOn">مفعّل دائمًا</span></span>
       </div>
       <div class="flex-1 grid grid-cols-2 md:grid-cols-5 gap-3 text-sm">
         <div class="bg-gray-900/40 border border-gray-700 rounded-lg p-2">
@@ -183,12 +233,10 @@
         </div>
       </div>
     </div>
-
-    <!-- شبكة التطبيق: يسار (تحكم) + يمين (المخرجات/الشات) -->
+        <!-- شبكة التطبيق -->
     <div class="app-grid">
-      <!-- لوحة التحكم في التداول (منظمة) -->
+      <!-- لوحة التحكم -->
       <div class="control-panel p-6 rounded-3xl space-y-6">
-        <!-- القسم: مزوّد النموذج + المفاتيح -->
         <section class="space-y-4">
           <h3 class="text-lg font-bold text-green-400">1) <span data-lang-key="providerLabel">موفّر النموذج:</span> & <span data-lang-key="apiKeyLabel">مفتاح API:</span></h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -208,10 +256,9 @@
             <div>
               <label for="openai-api-key-input" class="block text-sm font-medium text-gray-300 mb-2" data-lang-key="openaiApiKeyLabel">مفتاح OpenAI:</label>
               <input type="password" id="openai-api-key-input" class="w-full p-3 text-sm text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder-gray-500" placeholder="أدخل مفتاح OpenAI (اختياري)" />
-              <p class="text-xs text-gray-500 mt-1" data-lang-key="openaiNote">لن يظهر هذا الحقل إلا عند اختيار OpenAI.</p>
+              <p class="text-xs text-gray-500" data-lang-key="openaiNote">لن يظهر هذا الحقل إلا عند اختيار OpenAI.</p>
             </div>
 
-            <!-- القسم: أداء (تسريع + تحمل الضغط) -->
             <div>
               <label class="block text-sm font-medium text-gray-300 mb-2" data-lang-key="performanceLabel">الأداء:</label>
               <div class="flex flex-col gap-2">
@@ -229,7 +276,6 @@
           </div>
         </section>
 
-        <!-- القسم: الاستراتيجية -->
         <section class="space-y-4">
           <h3 class="text-lg font-bold text-green-400">2) <span data-lang-key="strategyTitle">الاستراتيجية</span></h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -252,7 +298,7 @@
             </div>
           </div>
         </section>
-                <!-- القسم: الإدخال والصور -->
+
         <section class="space-y-4">
           <h3 class="text-lg font-bold text-green-400">3) <span data-lang-key="inputSectionTitle">الإدخال والصور</span></h3>
           <div>
@@ -269,7 +315,6 @@
           </div>
         </section>
 
-        <!-- القسم: الأزرار -->
         <section class="space-y-3">
           <h3 class="text-lg font-bold text-green-400">4) <span data-lang-key="actionsTitle">الأوامر السريعة</span></h3>
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -280,10 +325,8 @@
           </div>
         </section>
       </div>
-
-      <!-- يمين: المخرجات + الشات -->
+            <!-- يمين: المخرجات + الشات -->
       <div class="space-y-6">
-        <!-- قسم مخرجات التحليل -->
         <section id="output-section" class="relative bg-gray-800 rounded-lg p-4 min-h-[200px] border border-gray-700 shadow-inner">
           <div id="loading-spinner" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <div class="loading-animation w-12 h-12 border-4 rounded-full"></div>
@@ -294,7 +337,6 @@
           </div>
         </section>
 
-        <!-- لوحة الشات المتقدّم -->
         <section id="chat-panel" class="chat-panel p-6 rounded-3xl">
           <div class="flex items-center justify-between mb-3">
             <h2 class="text-2xl font-bold text-white" data-lang-key="chatTitle">شات GPT متقدّم</h2>
@@ -308,7 +350,6 @@
           <div class="mt-4">
             <textarea id="chat-input" rows="3" class="w-full p-3 text-gray-100 bg-gray-900 rounded-lg outline-none border border-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder-gray-400" placeholder="اكتب رسالتك..." data-lang-key="chatPlaceholder"></textarea>
 
-            <!-- مرفقات صور الشات -->
             <input type="file" id="chat-image-upload" accept="image/*" class="hidden" multiple>
             <div id="chat-image-preview-container" class="hidden mt-3 p-2 rounded-lg border border-gray-700 bg-gray-900/50">
               <div id="chat-image-previews-wrapper" class="flex flex-wrap gap-3"></div>
@@ -326,8 +367,7 @@
         </section>
       </div>
     </div>
-
-    <!-- لوحة تحكم المسؤول -->
+        <!-- لوحة تحكم المسؤول -->
     <div id="admin-panel" class="hidden mt-6 p-6 bg-gray-900 rounded-2xl shadow-inner border border-gray-700">
       <h2 class="text-2xl font-bold text-white mb-4" data-lang-key="pendingRequestsTitle">طلبات الدخول المعلقة</h2>
       <div id="requests-list" class="space-y-4">
@@ -339,7 +379,8 @@
       </div>
     </div>
   </div>
-    <!-- نوافذ منبثقة -->
+
+  <!-- نوافذ منبثقة -->
   <div id="message-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay" style="background-color: rgba(12,21,33,0.8); backdrop-filter: blur(4px);">
     <div class="modal-content p-6 rounded-xl shadow-2xl w-full max-w-sm" style="background-color:#1f2937; border:1px solid #334155; box-shadow:0 8px 25px rgba(0,0,0,0.4)">
       <div class="text-center">
@@ -349,7 +390,6 @@
     </div>
   </div>
 
-  <!-- نموذج تأكيد التوصية ذات القناعة العالية -->
   <div id="invincible-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay" style="background-color: rgba(12,21,33,0.8); backdrop-filter: blur(4px);">
     <div class="modal-content p-6 rounded-xl shadow-2xl w-full max-w-lg" style="background-color:#1f2937; border:1px solid #334155; box-shadow:0 8px 25px rgba(0,0,0,0.4)">
       <div class="text-center">
@@ -363,7 +403,6 @@
     </div>
   </div>
 
-  <!-- نموذج تأكيد الحذف -->
   <div id="confirm-delete-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay" style="background-color: rgba(12,21,33,0.8); backdrop-filter: blur(4px);">
     <div class="modal-content p-6 rounded-xl shadow-2xl w-full max-w-sm" style="background-color:#1f2937; border:1px solid #334155; box-shadow:0 8px 25px rgba(0,0,0,0.4)">
       <div class="text-center">
@@ -378,7 +417,7 @@
   </div>
     <!-- سكريبت التطبيق -->
   <script type="module">
-    // Firebase & Google AI + App logic (with High-Load + Fast Mode)
+    // Firebase & Google AI + App logic (with High-Load + Fast Mode + Ultra AI Synth)
 
     // Firebase (CDN) - v12.2.1
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
@@ -403,6 +442,10 @@
     let fastModeEnabled = JSON.parse(localStorage.getItem('fastModeEnabled') ?? 'true');
     let highLoadEnabled = JSON.parse(localStorage.getItem('highLoadEnabled') ?? 'true');
 
+    // Ultra AI (always-on feature)
+    const aiPowerEnabled = true; // ميزة وليس زر - مفعلة دائمًا
+    const AI_POWER_LEVEL = 'ultra'; // للمستقبل (turbo/ultra...)
+
     // Abort controllers
     let analysisAbortController = null;
     let chatAbortController = null;
@@ -411,7 +454,7 @@
     const latencyHistory = [];
     const MAX_LATENCY_HISTORY = 10;
 
-    // ترجمات (مع مفاتيح الأداء الجديدة)
+    // ترجمات (أضفنا مفاتيح جديدة للميزة)
     const translations = {
       'ar': {
         pageTitle: 'JO AI',
@@ -428,6 +471,22 @@
         usernameLabel: 'اسم المستخدم:',
         passwordLabel: 'كلمة المرور:',
         loginSubmit: 'تسجيل الدخول',
+
+        /* Admin contact (moved to welcome) */
+        contactAdminTitle: 'تواصل مع المسؤول',
+        contactAdminDesc: 'بحاجة لمساعدة أو موافقة أسرع؟ تواصل عبر:',
+        instagramLabel: 'إنستغرام',
+        whatsappLabel: 'واتساب',
+
+        /* Ultra AI feature text */
+        aiPowerTitle: 'قوة الذكاء الاصطناعي: Ultra AI (ميزة)',
+        aiPowerDesc: 'وضع فائق يجمع تلقائيًا بين Gemini وOpenAI ويطبّق تنقيحًا ذاتيًا قبل الإخراج، لتحسين الدقة والوضوح. مفعّل دائمًا — ليس زرًا.',
+        aiPowerHint: 'تنبيه: الأداء عالي لكن لا يوجد ضمانات للنتائج، وهذه ليست نصيحة مالية.',
+        aiUltra: 'Ultra AI',
+        aiAlwaysOn: 'مفعّل دائمًا',
+        refineSystemPrompt: 'أنت محرّك تنقيح وتحسين للإجابات باسم "JO AI". مهمتك: دمج المسودات، كشف وتصحيح التناقضات/الأخطاء، إزالة التكرار، وإخراج جواب نهائي موجز وواضح قابل للتنفيذ عند الإمكان. لا تُظهر خطوات التفكير ولا تعليقات جانبية.',
+        refineUserPrefix: 'ادمج المسودتين الآتيتين في جواب واحد نهائي ومحسّن، وصحّح أي خطأ ظاهر. أعطني الجواب النهائي فقط دون إظهار المسودات أو الشرح:',
+
         waitingForApprovalTitle: 'في انتظار الموافقة',
         waitingForApprovalText: 'تم إرسال طلب الدخول الخاص بك. يرجى الانتظار حتى تتم الموافقة عليه من قبل المسؤول.',
         mainAppSubtitle: 'أداة تحليل السوق المدعومة بالذكاء الاصطناعي',
@@ -518,7 +577,6 @@
 
         chatSystemPrompt: 'أنت "JO GPT"، مساعد تداول واستثمار فائق التطور. تحدث العربية بطلاقة وبأسلوب احترافي وواثق. قدّم إجابات ذكية موجزة وعميقة، مدعومة بمنطق متماسك ومُلائمة للسياق. التزم بالقواعد: لا وعود، لا نصائح مالية ملزمة، اذكر المخاطر عند الضرورة. نمط التداول الحالي هو "${tradingStyle}" والمنهج الفني المفضّل هو "${school}".',
 
-        // الأداء الجديد
         performanceLabel: 'الأداء',
         fastModeLabel: 'تسريع الاستجابة',
         highLoadLabel: 'تحمّل الضغط العالي',
@@ -552,6 +610,22 @@
         usernameLabel: 'Username:',
         passwordLabel: 'Password:',
         loginSubmit: 'Login',
+
+        /* Admin contact */
+        contactAdminTitle: 'Contact the Admin',
+        contactAdminDesc: 'Need help or faster approval? Reach out via:',
+        instagramLabel: 'Instagram',
+        whatsappLabel: 'WhatsApp',
+
+        /* Ultra AI feature text */
+        aiPowerTitle: 'AI Power: Ultra AI (Feature)',
+        aiPowerDesc: 'An always-on mode that combines Gemini and OpenAI and runs an auto-refine pass for improved clarity and accuracy. It’s a feature — not a button.',
+        aiPowerHint: 'Note: High performance but no guarantees; not financial advice.',
+        aiUltra: 'Ultra AI',
+        aiAlwaysOn: 'Always On',
+        refineSystemPrompt: 'You are "JO AI" response refiner. Task: merge drafts, fix inconsistencies/errors, remove redundancy, and output a concise, actionable final answer. Do not reveal reasoning steps.',
+        refineUserPrefix: 'Merge the following two drafts into a single improved final answer, correcting any obvious errors. Return only the final answer without showing drafts:',
+
         waitingForApprovalTitle: 'Awaiting Approval',
         waitingForApprovalText: 'Your login request has been sent. Please wait for an administrator to approve it.',
         mainAppSubtitle: 'AI-Powered Market Analysis Tool',
@@ -821,7 +895,7 @@
         return true;
       }
     }
-    const geminiLimiter = new RateLimiter(5, 2); // up to ~5 tokens, +2/sec
+    const geminiLimiter = new RateLimiter(5, 2);
     const openaiLimiter = new RateLimiter(5, 2);
 
     // Request Queue
@@ -979,25 +1053,84 @@
       }
     };
 
-    // Fallback logic
+    // Fallback detection
     const shouldFallback = (txt='') => {
       const s = (txt || '').toLowerCase();
       return s.includes('429') || s.includes('rate limit') || s.includes('quota') || s.includes('5xx') || s.includes('api error');
     };
+
+    // ===== Ultra AI Synth (ميزة مفعّلة دائمًا عند توفر المفتاحين) =====
+    const isAiPowerActive = (geminiKey, openaiKey) => aiPowerEnabled && !!geminiKey && !!openaiKey;
+
+    const refineWithProvider = async ({ prefer='gemini', draft, geminiKey, openaiKey, abortSignal, timeoutMs=60000 }) => {
+      const sys = translations[currentLanguage]['refineSystemPrompt'];
+      const prompt = `${translations[currentLanguage]['refineUserPrefix']}\n\n---\n${draft}`;
+      try {
+        if (prefer === 'gemini' && geminiKey) {
+          return await getGeminiResponse(sys, prompt, geminiKey, [], abortSignal, timeoutMs);
+        } else if (openaiKey) {
+          const messages = [{ role: 'system', content: sys }, { role: 'user', content: prompt }];
+          return await getOpenAIChatResponse(sys, messages, openaiKey, abortSignal, timeoutMs);
+        } else if (geminiKey) {
+          return await getGeminiResponse(sys, prompt, geminiKey, [], abortSignal, timeoutMs);
+        }
+      } catch(e) {
+        return draft; // fallback to raw draft on refine failure
+      }
+      return draft;
+    };
+
+    const getDualUnifiedResponse = async ({ systemPrompt, userQuery, geminiKey, openaiKey, imagesBase64=[], abortSignal, timeoutMs=60000 }) => {
+      // Run both in parallel
+      const openaiMsgs = [{ role: 'system', content: systemPrompt }, { role: 'user', content: [{ type:'text', text: userQuery }, ...imagesBase64.map(b64 => ({ type:'image_url', image_url: { url: `data:image/jpeg;base64,${b64}` }}))] }];
+      const pGemini = getGeminiResponse(systemPrompt, userQuery, geminiKey, imagesBase64, abortSignal, timeoutMs);
+      const pOpenAI = getOpenAIChatResponse(systemPrompt, openaiMsgs, openaiKey, abortSignal, timeoutMs);
+      const [g, o] = await Promise.allSettled([pGemini, pOpenAI]);
+
+      const gem = g.status === 'fulfilled' ? g.value : '';
+      const ope = o.status === 'fulfilled' ? o.value : '';
+      if (gem && ope) {
+        const combined = `DRAFT_A:\n${gem}\n\nDRAFT_B:\n${ope}`;
+        return await refineWithProvider({ prefer:'gemini', draft: combined, geminiKey, openaiKey, abortSignal, timeoutMs });
+      }
+      return gem || ope || translations[currentLanguage]['apiRetryFailed'];
+    };
+
+    const getDualChatResponse = async ({ systemPrompt, history, geminiKey, openaiKey, abortSignal, timeoutMs=60000 }) => {
+      // Build OpenAI messages
+      const messages = [{ role:'system', content: systemPrompt }];
+      for (const msg of history) {
+        if (msg.role === 'assistant') messages.push({ role:'assistant', content: msg.text });
+        else {
+          if (msg.imagesBase64?.length) {
+            const content = [{ type:'text', text: msg.text }, ...msg.imagesBase64.map(b64 => ({ type:'image_url', image_url: { url: `data:image/jpeg;base64,${b64}` }}))];
+            messages.push({ role:'user', content });
+          } else {
+            messages.push({ role:'user', content: msg.text });
+          }
+        }
+      }
+      const pGemini = getGeminiChatResponse(systemPrompt, history, geminiKey, abortSignal, timeoutMs);
+      const pOpenAI = getOpenAIChatResponse(systemPrompt, messages, openaiKey, abortSignal, timeoutMs);
+      const [g, o] = await Promise.allSettled([pGemini, pOpenAI]);
+      const gem = g.status === 'fulfilled' ? g.value : '';
+      const ope = o.status === 'fulfilled' ? o.value : '';
+      if (gem && ope) {
+        const combined = `DRAFT_A:\n${gem}\n\nDRAFT_B:\n${ope}`;
+        return await refineWithProvider({ prefer:'gemini', draft: combined, geminiKey, openaiKey, abortSignal, timeoutMs });
+      }
+      return gem || ope || translations[currentLanguage]['apiRetryFailed'];
+    };
+
+    // ===== Baseline with fallback (kept) =====
     const callUnifiedWithFallback = async (args) => {
       const t0 = performance.now();
       let res = await getProviderUnifiedResponse(args);
-      let fellback = false;
       if (highLoadEnabled && shouldFallback(res)) {
-        // Switch provider if other key exists
         if (args.provider === 'gemini' && args.openaiKey) {
-          const alt = { ...args, provider: 'openai' };
-          res = `${translations[currentLanguage]['fallbackUsed']}: OpenAI\n\n` + (await getProviderUnifiedResponse(alt));
-          fellback = true;
+          res = `${translations[currentLanguage]['fallbackUsed']}: OpenAI\n\n` + (await getProviderUnifiedResponse({ ...args, provider: 'openai' }));
         } else if (args.provider === 'openai' && args.geminiKey) {
-          const alt = { ...args, provider: 'gemini' };
-          res = `${translations[currentLanguage]['fallbackUsed']}: Gemini\n\n` + (await getProviderUnifiedResponse(alt));
-          fellback = true;
+          res = `${translations[currentLanguage]['fallbackUsed']}: Gemini\n\n` + (await getProviderUnifiedResponse({ ...args, provider: 'gemini' }));
         }
       }
       const t1 = performance.now();
@@ -1006,7 +1139,6 @@
       return res;
     };
 
-    // Chat fallback
     const callChatWithFallback = async ({ provider, systemPrompt, history, geminiKey, openaiKey, abortSignal, timeoutMs }) => {
       const t0 = performance.now();
       let res;
@@ -1049,7 +1181,7 @@
       return res;
     };
 
-    // ===== Login/Requests/Admin (كما هي مع ربط اللغة) =====
+    // ===== Login/Requests/Admin (unchanged logic) =====
     const submitLoginRequest = async (username) => {
       if (!db) { showMessageModal(translations[currentLanguage]['dbConnectionError']); return; }
       try {
@@ -1467,7 +1599,6 @@
       try {
         setWarmup('warmingUp');
         if (provider === 'gemini' && geminiKey) {
-          // quick warm-up
           await getGeminiResponse('warm-up', 'ping', geminiKey, [], undefined, 8000);
         } else if (provider === 'openai' && openaiKey) {
           const messages = [{ role: 'system', content: 'warm-up'}, { role: 'user', content: 'ping'}];
@@ -1496,17 +1627,15 @@
       if (provider === 'gemini' && !geminiKey) { showMessageModal(translations[currentLanguage]['apiKeyRequired']); return; }
       if (!queryText && currentImagesData.length === 0) { showMessageModal(translations[currentLanguage]['queryOrImageRequired']); return; }
 
-      // Abort previous
       if (analysisAbortController) analysisAbortController.abort('new request');
       analysisAbortController = new AbortController();
 
       loadingSpinner.classList.remove('hidden');
       outputText.innerHTML = '';
-      setStatus('Processing...', 'text-yellow-300');
+      setStatus(isAiPowerActive(geminiKey, openaiKey) ? 'Ultra AI...' : 'Processing...', 'text-yellow-300');
       mainAppContainer.classList.remove('bg-green-trade', 'bg-red-trade');
       mainAppContainer.classList.add('bg-default');
 
-      // Build prompts
       let systemPrompt = '';
       let fullQuery = '';
       if (analysisType === 'high-conviction') {
@@ -1565,16 +1694,25 @@
       const imagesBase64 = currentImagesData.map(d => d.base64);
       const task = async () => {
         try {
-          const result = await callUnifiedWithFallback({
-            provider,
-            systemPrompt,
-            userQuery: fullQuery,
-            geminiKey,
-            openaiKey,
-            imagesBase64,
-            abortSignal: analysisAbortController.signal,
-            timeoutMs: 60000
-          });
+          let result;
+          if (isAiPowerActive(geminiKey, openaiKey)) {
+            const t0 = performance.now();
+            result = await getDualUnifiedResponse({ systemPrompt, userQuery: fullQuery, geminiKey, openaiKey, imagesBase64, abortSignal: analysisAbortController.signal, timeoutMs: 60000 });
+            const t1 = performance.now();
+            updateLatency(t1 - t0);
+            setStatus('Done', 'text-green-300');
+          } else {
+            result = await callUnifiedWithFallback({
+              provider,
+              systemPrompt,
+              userQuery: fullQuery,
+              geminiKey,
+              openaiKey,
+              imagesBase64,
+              abortSignal: analysisAbortController.signal,
+              timeoutMs: 60000
+            });
+          }
           document.getElementById('output-text').innerHTML = formatMarkdown(result);
           if (result.includes(translations[currentLanguage]['buyKeyword'])) {
             mainAppContainer.classList.remove('bg-default'); mainAppContainer.classList.add('bg-green-trade');
@@ -1592,7 +1730,6 @@
         }
       };
 
-      // Enqueue
       analysisQueue.enqueue(task);
     };
 
@@ -1640,7 +1777,6 @@
       if (provider === 'openai' && !openaiKey) { showMessageModal(translations[currentLanguage]['openaiApiKeyRequired']); return; }
       if (provider === 'gemini' && !geminiKey) { showMessageModal(translations[currentLanguage]['apiKeyRequired']); return; }
 
-      // Abort previous chat if any
       if (chatAbortController) chatAbortController.abort('new chat');
       chatAbortController = new AbortController();
 
@@ -1648,7 +1784,6 @@
                             .replace('${tradingStyle}', tradingStyle)
                             .replace('${school}', school);
 
-      // Push user message
       const imagesBase64 = currentChatImagesData.map(d => d.base64);
       chatHistory.push({ role: 'user', text, imagesBase64 });
       renderChatMessages();
@@ -1658,13 +1793,24 @@
       renderChatImagePreviews();
 
       chatLoading.classList.remove('hidden');
-      setStatus('Processing...', 'text-yellow-300');
+      setStatus(isAiPowerActive(geminiKey, openaiKey) ? 'Ultra AI...' : 'Processing...', 'text-yellow-300');
 
       const task = async () => {
         try {
-          const assistantReply = await callChatWithFallback({
-            provider, systemPrompt, history: chatHistory, geminiKey, openaiKey, abortSignal: chatAbortController.signal, timeoutMs: 60000
-          });
+          let assistantReply;
+          if (isAiPowerActive(geminiKey, openaiKey)) {
+            const t0 = performance.now();
+            assistantReply = await getDualChatResponse({
+              systemPrompt, history: chatHistory, geminiKey, openaiKey, abortSignal: chatAbortController.signal, timeoutMs: 60000
+            });
+            const t1 = performance.now();
+            updateLatency(t1 - t0);
+            setStatus('Done', 'text-green-300');
+          } else {
+            assistantReply = await callChatWithFallback({
+              provider, systemPrompt, history: chatHistory, geminiKey, openaiKey, abortSignal: chatAbortController.signal, timeoutMs: 60000
+            });
+          }
           chatHistory.push({ role: 'assistant', text: assistantReply });
           renderChatMessages();
         } catch (e) {
@@ -1682,5 +1828,5 @@
     // Expose for debug
     window._JOAI = { chatHistory };
   </script>
-  </body>
+</body>
 </html>
