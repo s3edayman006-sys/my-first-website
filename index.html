@@ -1136,103 +1136,7 @@
         }
 
 
-        /* Voice Chat Page Styles */
-        .voice-chat-page {
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
 
-        .voice-page-action-btn {
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .voice-page-action-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .voice-page-action-btn:active {
-            transform: scale(0.95);
-        }
-
-        #status-pulse {
-            transition: all 0.3s ease;
-        }
-
-        /* Voice Chat States */
-        @keyframes pulse-ring {
-            0% {
-                transform: scale(0.3);
-                opacity: 0.8;
-            }
-            100% {
-                transform: scale(2.5);
-                opacity: 0;
-            }
-        }
-        
-        /* Listening State */
-        .voice-listening #status-pulse {
-            display: block !important;
-            border-color: #10a37f;
-            animation: pulse-ring 1.5s cubic-bezier(0.66, 0, 0, 1) infinite;
-        }
-
-        /* Speaking State */
-        .voice-speaking #mic-icon {
-            color: #10a37f !important;
-            transform: scale(1.1);
-            transition: all 0.3s ease;
-        }
-        
-        /* Processing State */
-        .voice-processing #status-pulse {
-            display: block !important;
-            border-color: #f7f7f7; 
-            animation: none;
-            transform: scale(1.5);
-            opacity: 0.5;
-        }
-
-        /* Voice Chat Page Background Effects */
-        .voice-chat-page::before,
-        .voice-chat-page::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-        }
-        .voice-chat-page::before {
-            background: radial-gradient(600px 300px at 80% 20%, rgba(255,255,255,0.06), transparent 60%),
-                        radial-gradient(500px 260px at 20% 80%, rgba(255,255,255,0.04), transparent 60%);
-        }
-        .voice-chat-page::after {
-            background: linear-gradient(to bottom, rgba(0,0,0,0.0), rgba(0,0,0,0.2));
-        }
-
-        /* تحسينات الكاميرا */
-        #camera-stream {
-            transform: scaleX(-1); /* عكس الصورة للكاميرا الأمامية */
-        }
-        
-        #camera-modal {
-            backdrop-filter: blur(10px);
-        }
-        
-        #camera-modal video {
-            border-radius: 0.5rem;
-        }
-        
-        #capture-photo {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
         
         /* تحسينات للأجهزة المحمولة */
         @media (max-width: 768px) {
@@ -1271,19 +1175,6 @@
                 padding: 0.75rem;
             }
             
-            /* تحسينات الكاميرا للأجهزة المحمولة */
-            #camera-modal {
-                padding: 1rem;
-            }
-            
-            #camera-modal .max-w-2xl {
-                max-width: 100%;
-            }
-            
-            #camera-stream {
-                height: 60vh;
-                min-height: 300px;
-            }
         }
     </style>
 </head>
@@ -1383,20 +1274,6 @@
                             <button type="button" id="upload-image-btn" class="composer-btn" title="إرفاق صور">
                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                             </button>
-                            <button type="button" id="camera-btn" class="composer-btn" title="التصوير المباشر">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                                    <circle cx="12" cy="13" r="4"></circle>
-                                </svg>
-                            </button>
-                            <button type="button" id="voice-btn" class="voice-btn" title="محادثة صوتية">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                                    <line x1="12" y1="19" x2="12" y2="23"/>
-                                    <line x1="8" y1="23" x2="16" y2="23"/>
-                                </svg>
-                            </button>
                             <button type="submit" id="send-btn" class="composer-btn send-btn" title="إرسال">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <line x1="22" y1="2" x2="11" y2="13"/>
@@ -1413,81 +1290,6 @@
     <!-- Hidden file input for images -->
     <input type="file" id="image-file-input" class="hidden" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv,.xlsx,.xls,.ppt,.pptx" multiple>
     
-    <!-- Hidden camera input -->
-    <input type="file" id="camera-input" class="hidden" accept="image/*" capture="environment">
-    
-    <!-- Camera Modal -->
-    <div id="camera-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col items-center justify-center p-4">
-        <div class="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
-            <div class="p-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white flex items-center justify-between">
-                <h3 class="text-lg font-bold flex items-center gap-2">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                        <circle cx="12" cy="13" r="4"></circle>
-                    </svg>
-                    التصوير المباشر
-                </h3>
-                <button id="close-camera" class="hover:bg-white/20 rounded-full p-2 transition">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
-            <div class="p-6">
-                <div class="relative bg-black rounded-lg overflow-hidden" style="aspect-ratio: 4/3;">
-                    <video id="camera-stream" class="w-full h-full object-cover" autoplay playsinline></video>
-                    <canvas id="camera-canvas" class="hidden"></canvas>
-                </div>
-                <div class="mt-6 flex items-center justify-center gap-4">
-                    <button id="switch-camera" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition flex items-center gap-2">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="23 4 23 10 17 10"></polyline>
-                            <polyline points="1 20 1 14 7 14"></polyline>
-                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-                        </svg>
-                        تبديل الكاميرا
-                    </button>
-                    <button id="capture-photo" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:shadow-lg transform hover:scale-105 transition flex items-center gap-2 font-bold">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                        </svg>
-                        التقاط صورة
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- صفحة المحادثة الصوتية -->
-    <div id="voice-chat-page" class="fixed inset-0 bg-black/80 z-50 hidden flex flex-col items-center justify-center p-4 voice-chat-page">
-        <div class="flex flex-col items-center justify-center space-y-8">
-            
-            <div class="text-white text-3xl font-tajawal text-center">
-                <span id="voice-page-status-message" class="tracking-wider">تحدث الآن</span>
-            </div>
-
-            <div class="relative">
-                <button id="voice-page-action-btn" class="p-10 rounded-full bg-white text-black shadow-2xl transition duration-300 transform hover:scale-105 disabled:opacity-50 voice-page-action-btn">
-                    <i id="mic-icon" class="fas fa-microphone text-4xl"></i>
-                </button>
-                <div id="status-pulse" class="absolute inset-0 rounded-full border-4 border-transparent pointer-events-none hidden"></div>
-            </div>
-
-            <div class="flex space-x-4 space-x-reverse">
-                
-                <button id="close-voice-chat-btn" class="text-white text-opacity-70 hover:text-white transition duration-200 px-4 py-2 rounded-lg">
-                    <i class="fas fa-times mr-2"></i> إغلاق
-                </button>
-                
-                <button id="stop-speaking-btn" class="text-white text-opacity-70 hover:text-red-400 transition duration-200 px-4 py-2 rounded-lg hidden">
-                    <i class="fas fa-stop mr-2"></i> إيقاف الرد
-                </button>
-            </div>
-            
-        </div>
-    </div>
-
     <!-- Settings Modal -->
     <div id="settings-modal" class="modal hidden">
         <div class="modal-content">
@@ -1593,7 +1395,30 @@
             typographer: true,
         });
         
+        // ========================================
+        // 🔧 تعريف المتغيرات الأساسية
+        // ========================================
+        
+        // العناصر الأساسية
+        const messageForm = document.getElementById('message-form');
+        const messageInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        const uploadImageBtn = document.getElementById('upload-image-btn');
+        const chatMessages = document.getElementById('chat-messages');
+        const emptyState = document.getElementById('empty-state');
+        const suggestionsContainer = document.getElementById('suggestions');
+        const apiKeyInput = document.getElementById('api-key');
+        
+        // متغيرات المحادثة
+        let conversations = {};
+        let activeConversationId = null;
+        let uploadedImages = [];
+        let isThinking = false;
+        let apiKey = '';
+        
+        // ========================================
         // 🧠 نظام الذكاء الاصطناعي الفائق (AI Super Intelligence)
+        // ========================================
         class AISuperIntelligence {
             constructor() {
                 this.brainPower = {
@@ -2784,12 +2609,7 @@
             let recognition = null;
             
             // --- متغيرات المحادثة الصوتية المتقدمة ---
-            let currentUtterance = null; // النطق الحالي
-            let voiceChatActive = false; // حالة المحادثة الصوتية
-            let speechRecognition = null; // كائن التعرف على الصوت
-            let speechSynthesis = null; // كائن تحويل النص إلى كلام
-            let voiceChatPage = null; // صفحة المحادثة الصوتية
-            let voiceConversationHistory = []; // سجل المحادثة الصوتية
+            // (تم نقلها إلى الأعلى)
 
             // --- دوال رئيسية (بفحص الوجود) ---
             
@@ -2858,6 +2678,13 @@
                 if (chatMessages) { // فحص أمان
                 chatMessages.insertAdjacentHTML('beforeend', typingIndicatorHTML);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            };
+
+            const hideTypingIndicator = () => {
+                const typingIndicator = document.getElementById('typing-indicator');
+                if (typingIndicator) {
+                    typingIndicator.remove();
                 }
             };
 
@@ -4787,13 +4614,6 @@
                 isThinking = !enabled;
             };
 
-            const hideTypingIndicator = () => {
-                const typingIndicator = document.getElementById('typing-indicator');
-                if (typingIndicator) {
-                    typingIndicator.remove();
-                }
-            };
-
             // --- دوال إدارة المحادثات والـ API (تم إضافة فحوصات أمان بسيطة) ---
             
             const saveConversations = () => {
@@ -5052,10 +4872,8 @@
                             conversationId: activeConversationId
                         });
                         
-                        // نطق الرد إذا كانت المحادثة الصوتية نشطة
-                        if (voiceChatActive) {
-                            processAIResponseAndSpeak(aiResponseText);
-                        }
+                        
+                return aiResponseText;
                     }
                 } finally {
                     hideTypingIndicator();
@@ -5168,322 +4986,20 @@
             if (newChatBtn) newChatBtn.addEventListener('click', createNewConversation);
 
             // --- وظائف الصوت ---
-            const initVoiceRecognition = () => {
-                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                    recognition = new SpeechRecognition();
-                    recognition.continuous = false;
-                    recognition.interimResults = false;
-                    recognition.lang = 'ar-SA';
-
-                    recognition.onstart = () => {
-                        if (voiceBtn) {
-                            voiceBtn.classList.add('listening');
-                            voiceBtn.title = 'جاري الاستماع...';
-                        }
-                        showNotification('جاري الاستماع...', 'info');
-                    };
-
-                    recognition.onresult = (event) => {
-                        const transcript = event.results[0][0].transcript;
-                        if (messageInput) {
-                            messageInput.value = transcript;
-                            debouncedInputHandler();
-                        }
-                        showNotification('تم تحويل الصوت إلى نص', 'success');
-                    };
-
-                    recognition.onerror = (event) => {
-                        console.error('خطأ في التعرف على الصوت:', event.error);
-                        showNotification('خطأ في التعرف على الصوت', 'error');
-                    };
-
-                    recognition.onend = () => {
-                        if (voiceBtn) {
-                            voiceBtn.classList.remove('listening');
-                            voiceBtn.title = 'محادثة صوتية';
-                        }
-                    };
-                } else {
-                    showNotification('المتصفح لا يدعم التعرف على الصوت', 'warning');
-                }
-            };
-
-            const startVoiceRecording = () => {
-                if (!recognition) {
-                    initVoiceRecognition();
-                }
-                
-                if (recognition && !isRecording) {
-                    try {
-                        recognition.start();
-                        isRecording = true;
-                    } catch (error) {
-                        console.error('خطأ في بدء التسجيل:', error);
-                        showNotification('خطأ في بدء التسجيل الصوتي', 'error');
-                    }
-                }
-            };
-
-            const stopVoiceRecording = () => {
-                if (recognition && isRecording) {
-                    recognition.stop();
-                    isRecording = false;
-                }
-            };
-
-            // ربط أحداث زر الصوت
-            if (voiceBtn) {
-                voiceBtn.addEventListener('click', () => {
-                    openVoiceChatPage();
-                });
-            }
+            // (تم حذف جميع وظائف المحادثة الصوتية)
             
-            // --- دوال المحادثة الصوتية المتقدمة ---
+            // --- دوال إدارة المحادثات والـ API (تم إضافة فحوصات أمان بسيطة) ---
             
-            // دالة تحديث حالة صفحة المحادثة الصوتية
-            function updateVoicePageStatus(statusText, actionText, state) {
-                const voicePageStatusMessage = document.getElementById('voice-page-status-message');
-                const voicePageActionBtn = document.getElementById('voice-page-action-btn');
-                const stopSpeakingBtn = document.getElementById('stop-speaking-btn');
-                const voiceChatPage = document.getElementById('voice-chat-page');
-                const micIcon = document.getElementById('mic-icon');
-                
-                if (!voiceChatPage) return;
-
-                if (voicePageStatusMessage) voicePageStatusMessage.textContent = statusText;
-                
-                // إزالة جميع فئات الحالة الحالية أولاً
-                voiceChatPage.classList.remove('voice-listening', 'voice-speaking', 'voice-processing', 'voice-idle');
-                
-                // تحديث الحالة
-                voiceChatPage.classList.add(`voice-${state}`);
-                if (voicePageActionBtn) voicePageActionBtn.disabled = (state !== 'listening');
-                
-                // إظهار/إخفاء زر الإيقاف
-                if (stopSpeakingBtn) {
-                    stopSpeakingBtn.classList.toggle('hidden', state !== 'speaking');
-                }
-
-                if (state === 'listening') {
-                    if (voicePageActionBtn) voicePageActionBtn.classList.remove('bg-gray-400');
-                    if (micIcon) micIcon.classList.remove('text-gray-400');
-                }
-            }
             
-            // دالة فتح صفحة المحادثة الصوتية
-            function openVoiceChatPage() {
-                const voiceChatPage = document.getElementById('voice-chat-page');
-                if (voiceChatPage) {
-                    voiceChatPage.classList.remove('hidden');
-                    voiceChatPage.classList.add('active');
-                    // نبدأ بالتهيئة والتأكد من حالة السكون
-                    updateVoicePageStatus('جاهز للاستماع', 'تحدث الآن', 'idle');
-                }
-            }
 
-            // دالة إغلاق صفحة المحادثة الصوتية
-            function closeVoiceChatPage() {
-                const voiceChatPage = document.getElementById('voice-chat-page');
-                if (voiceChatPage) {
-                    // تأكد من إيقاف أي شيء قيد التشغيل قبل الإغلاق
-                    if (window.speechSynthesis && currentUtterance) {
-                        window.speechSynthesis.cancel();
-                        currentUtterance = null;
-                    }
-                    if (speechRecognition) {
-                        speechRecognition.stop();
-                    }
-                    voiceChatActive = false;
-                    
-                    voiceChatPage.classList.add('hidden');
-                    voiceChatPage.classList.remove('active');
-                }
-            }
 
-            // دالة تهيئة صفحة المحادثة الصوتية
-            function initVoiceChatPage() {
-                console.log('🎤 تهيئة صفحة المحادثة الصوتية');
-                
-                // الحصول على صفحة المحادثة الصوتية
-                const voiceChatPage = document.getElementById('voice-chat-page');
-                
-                // تهيئة Web Speech API
-                initSpeechRecognition();
-                initSpeechSynthesis();
-                
-                console.log('✅ تم تهيئة صفحة المحادثة الصوتية بنجاح');
-            }
             
-            // تهيئة Speech Recognition
-            function initSpeechRecognition() {
-                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                    console.warn('Speech Recognition غير مدعوم في هذا المتصفح');
-                    return null;
-                }
-
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                speechRecognition = new SpeechRecognition();
-                speechRecognition.continuous = false;
-                speechRecognition.interimResults = false;
-                speechRecognition.lang = 'ar-SA';
-                speechRecognition.maxAlternatives = 1;
-                
-                // ربط الأحداث
-                speechRecognition.onstart = () => {
-                    console.log('🎤 بدء الاستماع...');
-                    voiceChatActive = true;
-                    updateVoicePageStatus('جاري الاستماع...', 'تحدث الآن', 'listening');
-                };
-                
-                speechRecognition.onresult = (event) => {
-                    const transcript = event.results[0][0].transcript;
-                    console.log('🎤 تم التعرف على:', transcript);
-                    
-                    if (transcript.trim()) {
-                        // إرسال الرسالة
-                        getAIResponse(transcript);
-                    }
-                };
-                
-                speechRecognition.onerror = (event) => {
-                    console.error('خطأ في التعرف على الصوت:', event.error);
-                    voiceChatActive = false;
-                    updateVoicePageStatus('خطأ في التعرف على الصوت', 'تحدث الآن', 'idle');
-                };
-                
-                speechRecognition.onend = () => {
-                    console.log('🎤 انتهاء الاستماع');
-                    voiceChatActive = false;
-                    updateVoicePageStatus('جاهز للاستماع', 'تحدث الآن', 'idle');
-                };
-                
-                return speechRecognition;
-            }
             
-            // تهيئة Speech Synthesis
-            function initSpeechSynthesis() {
-                if (!('speechSynthesis' in window)) {
-                    console.warn('Speech Synthesis غير مدعوم في هذا المتصفح');
-                    return false;
-                }
-                
-                // الحصول على الأصوات المتاحة
-                const voices = window.speechSynthesis.getVoices();
-                console.log('الأصوات المتاحة:', voices.length);
-                
-                return true;
-            }
             
-            // دالة النطق الأساسية
-            const speakText = (text, callback = () => {}) => {
-                if (!('speechSynthesis' in window)) {
-                    console.warn('Speech Synthesis غير مدعوم');
-                    callback();
-                    return;
-                }
-
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'ar-SA'; 
-                utterance.rate = 1.1; 
-                utterance.pitch = 1.0;
-
-                // استخدام onend لإنهاء النطق بشكل سليم
-                utterance.onend = () => {
-                    currentUtterance = null;
-                    callback(); 
-                };
-
-                utterance.onerror = (error) => {
-                    console.error('خطأ في النطق:', error);
-                    currentUtterance = null;
-                    callback();
-                };
-
-                currentUtterance = utterance;
-                window.speechSynthesis.speak(utterance);
-            };
             
-            // معالجة الرد الصوتي
-            function processAIResponseAndSpeak(responseText) {
-                if (!responseText || !responseText.trim()) {
-                    console.warn('لا يوجد نص للنطق');
-                    return;
-                }
-                
-                // إيقاف أي نطق سابق
-                if (window.speechSynthesis) {
-                    window.speechSynthesis.cancel();
-                }
-                
-                // تقسيم النص إلى جمل للنطق المتسلسل
-                const sentences = responseText.match(/[^.!?]+[.!?]+/g) || [responseText];
-                let currentIndex = 0;
-                
-                const speakNext = () => {
-                    if (currentIndex >= sentences.length) {
-                        // بعد الانتهاء، ابدأ الاستماع مرة أخرى
-                        setTimeout(() => {
-                            if (!voiceChatActive) {
-                                startVoiceChat();
-                            }
-                        }, 1000);
-                        return;
-                    }
-
-                    const sentence = sentences[currentIndex];
-                    currentIndex++;
-
-                    if (sentence && sentence.trim()) {
-                        // نطق الجملة، وبمجرد الانتهاء، يتم استدعاء speakNext
-                        speakText(sentence.trim(), speakNext);
-                    } else {
-                        speakNext();
-                    }
-                };
-
-                speakNext();
-            }
             
-            // دوال التحكم في المحادثة الصوتية
-            function startVoiceChat() {
-                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                    console.warn('Speech Recognition غير مدعوم');
-                    showNotification('المتصفح لا يدعم التعرف على الصوت', 'warning');
-                    return;
-                }
-                
-                if (!speechRecognition) {
-                    initSpeechRecognition();
-                }
-                
-                if (speechRecognition && !voiceChatActive) {
-                    try {
-                        speechRecognition.start();
-                        voiceChatActive = true;
-                        updateVoicePageStatus('جاري الاستماع...', 'تحدث الآن', 'listening');
-                    } catch (error) {
-                        console.error('خطأ في بدء المحادثة الصوتية:', error);
-                        showNotification('خطأ في بدء المحادثة الصوتية', 'error');
-                    }
-                }
-            }
 
-            function stopVoiceChat() {
-                if (speechRecognition && voiceChatActive) {
-                    speechRecognition.stop();
-                    voiceChatActive = false;
-                    updateVoicePageStatus('جاهز للاستماع', 'تحدث الآن', 'idle');
-                }
-            }
             
-            function toggleVoiceChat() {
-                if (voiceChatActive) {
-                    stopVoiceChat();
-                } else {
-                    startVoiceChat();
-                }
-            }
 
             // دالة حذف المحادثة - مع أرشفة تلقائية
             const deleteConversation = (id) => {
@@ -6562,273 +6078,19 @@
             }, 1000);
             
             // ========================================
-            // 📷 نظام الكاميرا المتقدم
+            // 🎤 تهيئة المحادثة الصوتية
             // ========================================
             
-            let currentStream = null;
-            let currentFacingMode = 'environment'; // 'user' for front camera, 'environment' for back camera
-            
-            const cameraBtn = document.getElementById('camera-btn');
-            const cameraModal = document.getElementById('camera-modal');
-            const closeCameraBtn = document.getElementById('close-camera');
-            const cameraStream = document.getElementById('camera-stream');
-            const cameraCanvas = document.getElementById('camera-canvas');
-            const capturePhotoBtn = document.getElementById('capture-photo');
-            const switchCameraBtn = document.getElementById('switch-camera');
-            
-            // فتح الكاميرا
-            async function openCamera() {
-                try {
-                    // فحص دعم الكاميرا
-                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                        throw new Error('الكاميرا غير مدعومة في هذا المتصفح');
-                    }
-                    
-                    // إيقاف أي بث حالي
-                    if (currentStream) {
-                        currentStream.getTracks().forEach(track => track.stop());
-                    }
-                    
-                    // طلب الوصول للكاميرا مع قيود مرنة
-                    const constraints = {
-                        video: {
-                            facingMode: currentFacingMode,
-                            width: { ideal: 1920, min: 640 },
-                            height: { ideal: 1080, min: 480 }
-                        },
-                        audio: false
-                    };
-                    
-                    console.log('🎥 طلب الوصول للكاميرا...');
-                    currentStream = await navigator.mediaDevices.getUserMedia(constraints);
-                    
-                    if (cameraStream) {
-                        cameraStream.srcObject = currentStream;
-                        cameraModal.classList.remove('hidden');
-                        
-                        // انتظار تحميل الفيديو
-                        cameraStream.onloadedmetadata = () => {
-                            console.log('✅ تم تحميل الكاميرا بنجاح');
-                            showNotification('تم فتح الكاميرا بنجاح! 📸', 'success');
-                        };
-                    } else {
-                        throw new Error('عنصر الفيديو غير موجود');
-                    }
-                    
-                } catch (error) {
-                    console.error('❌ خطأ في فتح الكاميرا:', error);
-                    
-                    let errorMessage = 'فشل في فتح الكاميرا';
-                    if (error.name === 'NotAllowedError') {
-                        errorMessage = 'تم رفض الوصول للكاميرا. يرجى السماح بالوصول في إعدادات المتصفح';
-                    } else if (error.name === 'NotFoundError') {
-                        errorMessage = 'لم يتم العثور على كاميرا';
-                    } else if (error.name === 'NotSupportedError') {
-                        errorMessage = 'الكاميرا غير مدعومة في هذا المتصفح';
-                    } else if (error.name === 'NotReadableError') {
-                        errorMessage = 'الكاميرا مستخدمة من قبل تطبيق آخر';
-                    }
-                    
-                    showNotification(errorMessage, 'error');
-                }
-            }
-            
-            // إغلاق الكاميرا
-            function closeCamera() {
-                if (currentStream) {
-                    currentStream.getTracks().forEach(track => track.stop());
-                    currentStream = null;
-                }
-                cameraModal.classList.add('hidden');
-                cameraStream.srcObject = null;
-            }
-            
-            // تبديل الكاميرا (أمامية/خلفية)
-            async function switchCamera() {
-                currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
-                await openCamera();
-            }
-            
-            // التقاط صورة
-            function capturePhoto() {
-                try {
-                    // إعداد canvas بنفس أبعاد الفيديو
-                    const video = cameraStream;
-                    cameraCanvas.width = video.videoWidth;
-                    cameraCanvas.height = video.videoHeight;
-                    
-                    // رسم الصورة على canvas
-                    const ctx = cameraCanvas.getContext('2d');
-                    ctx.drawImage(video, 0, 0);
-                    
-                    // تحويل الصورة إلى blob
-                    cameraCanvas.toBlob(async (blob) => {
-                        if (blob) {
-                            // إنشاء ملف من blob
-                            const timestamp = new Date().getTime();
-                            const file = new File([blob], `camera_${timestamp}.jpg`, { type: 'image/jpeg' });
-                            
-                            // إضافة الصورة للملفات المرفوعة
-                            const fileData = {
-                                id: `file_${timestamp}`,
-                                name: file.name,
-                                size: file.size,
-                                type: 'image',
-                                mimeType: file.type,
-                                file: file,
-                                preview: URL.createObjectURL(blob),
-                                willSendToAPI: true,
-                                isProcessing: true
-                            };
-                            
-                            uploadedImages.push(fileData);
-                            updateImagePreviews();
-                            
-                            // معالجة الملف
-                            try {
-                                const result = await convertFileToBase64(file);
-                                const index = uploadedImages.findIndex(f => f.id === fileData.id);
-                                if (index !== -1) {
-                                    uploadedImages[index] = {
-                                        ...fileData,
-                                        content: result.content,
-                                        mimeType: result.mimeType,
-                                        isProcessing: false
-                                    };
-                                    updateImagePreviews();
-                                }
-                            } catch (error) {
-                                console.error('خطأ في معالجة الصورة:', error);
-                                const index = uploadedImages.findIndex(f => f.id === fileData.id);
-                                if (index !== -1) {
-                                    uploadedImages.splice(index, 1);
-                                    updateImagePreviews();
-                                }
-                            }
-                            
-                            showNotification('تم التقاط الصورة بنجاح! 📸', 'success');
-                            closeCamera();
-                        }
-                    }, 'image/jpeg', 0.95);
-                    
-                } catch (error) {
-                    console.error('خطأ في التقاط الصورة:', error);
-                    showNotification('فشل في التقاط الصورة', 'error');
-                }
-            }
-            
-            // ربط الأحداث مع فحص الأمان
-            if (cameraBtn) {
-                cameraBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('📷 تم النقر على زر الكاميرا');
-                    openCamera();
-                });
-            } else {
-                console.warn('⚠️ زر الكاميرا غير موجود');
-            }
-            
-            if (closeCameraBtn) {
-                closeCameraBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('❌ إغلاق الكاميرا');
-                    closeCamera();
-                });
-            }
-            
-            if (switchCameraBtn) {
-                switchCameraBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('🔄 تبديل الكاميرا');
-                    switchCamera();
-                });
-            }
-            
-            if (capturePhotoBtn) {
-                capturePhotoBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    console.log('📸 التقاط صورة');
-                    capturePhoto();
-                });
-            }
-            
-            // إغلاق الكاميرا عند الضغط على ESC
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && cameraModal && !cameraModal.classList.contains('hidden')) {
-                    closeCamera();
-                }
-            });
-            
-            // فحص دعم الكاميرا عند تحميل الصفحة
-            document.addEventListener('DOMContentLoaded', () => {
-                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                    console.warn('⚠️ الكاميرا غير مدعومة في هذا المتصفح');
-                    if (cameraBtn) {
-                        cameraBtn.style.opacity = '0.5';
-                        cameraBtn.title = 'الكاميرا غير مدعومة في هذا المتصفح';
-                    }
-                } else {
-                    console.log('✅ الكاميرا مدعومة في هذا المتصفح');
-                }
-            });
-            
-            // فحص شامل لحالة الكاميرا
-            function checkCameraStatus() {
-                console.log('🔍 فحص حالة الكاميرا...');
-                
-                // فحص العناصر
-                const elements = {
-                    cameraBtn: document.getElementById('camera-btn'),
-                    cameraModal: document.getElementById('camera-modal'),
-                    cameraStream: document.getElementById('camera-stream'),
-                    cameraCanvas: document.getElementById('camera-canvas'),
-                    capturePhotoBtn: document.getElementById('capture-photo'),
-                    switchCameraBtn: document.getElementById('switch-camera'),
-                    closeCameraBtn: document.getElementById('close-camera')
-                };
-                
-                console.log('📋 حالة العناصر:', elements);
-                
-                // فحص دعم المتصفح
-                const browserSupport = {
-                    mediaDevices: !!navigator.mediaDevices,
-                    getUserMedia: !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia),
-                    canvas: !!document.createElement('canvas').getContext,
-                    video: !!document.createElement('video').canPlayType
-                };
-                
-                console.log('🌐 دعم المتصفح:', browserSupport);
-                
-                // فحص الأذونات
-                if (navigator.permissions) {
-                    navigator.permissions.query({name: 'camera'}).then(result => {
-                        console.log('🔐 حالة أذونات الكاميرا:', result.state);
-                    }).catch(err => {
-                        console.log('⚠️ لا يمكن فحص أذونات الكاميرا:', err);
-                    });
-                }
-                
-                return {
-                    elements: elements,
-                    browserSupport: browserSupport,
-                    allElementsPresent: Object.values(elements).every(el => el !== null),
-                    browserSupportsCamera: browserSupport.mediaDevices && browserSupport.getUserMedia
-                };
-            }
-            
-            // تشغيل فحص الحالة بعد تحميل الصفحة
+            // تهيئة المحادثة الصوتية عند تحميل الصفحة
             setTimeout(() => {
-                const status = checkCameraStatus();
-                console.log('📊 تقرير حالة الكاميرا:', status);
-                
-                if (status.allElementsPresent && status.browserSupportsCamera) {
-                    console.log('✅ الكاميرا جاهزة للاستخدام!');
-                } else {
-                    console.warn('⚠️ هناك مشاكل في إعداد الكاميرا');
+                try {
+                    console.log('✅ تم تحميل النظام بنجاح');
+                } catch (error) {
+                    console.error('❌ خطأ في تحميل النظام:', error);
                 }
-            }, 1000);
+            }, 500);
             
-            console.log('✅ تم تهيئة نظام الكاميرا المتقدم');
+            
     </script>
 </body>
 </html>
